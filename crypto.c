@@ -246,15 +246,33 @@ static unsigned int rand_between(unsigned int min, unsigned int max)
 	return min + (r / buckets);
 }
 
-//Compare two hmac hashes and return true if they match, false if not.
+//Timing safe comparing of two hmac hashes. Return true if they match, 
+//false if not.
 bool verify_hmac(const unsigned char *old, const unsigned char *new)
-{
-	for(int i = 0; i < HMAC_SIZE; i++) {
+{	
+	const unsigned char *u1;
+	const unsigned char *u2;
+	int ret;
+	int i;
 
-		if(old[i] != new[i])
-			return false;
-	}
+	int len1 = strlen((char*)old);
+	int len2 = strlen((char*)new);
 
+	//First of all, they must the same size.
+	if (len1 != len2)
+		return false;
+
+	u1 = old;
+	u2 = new;
+
+	ret = 0;
+
+	for (i = 0; i < len1; ++i)
+		ret |= (u1[i] ^ u2[i]);
+
+	if(ret != 0)
+		return false;
+	
 	return true;
 }
 
@@ -264,7 +282,7 @@ unsigned char *get_data_hmac(const char *data, long datalen, Key_t key)
 {
 	unsigned char *mac;
 	MHASH td;
-
+	
 	td = mhash_hmac_init(MHASH_SHA256, key.data, KEY_SIZE,
 			mhash_get_hash_pblock(MHASH_SHA256));
 
@@ -506,7 +524,6 @@ bool encrypt_file(const char *path, const char *passphrase)
 	//into the end of the file.
 	if(!hmac_file_content(path, key)) {
 		fprintf(stderr, "Failed to write hmac\n");
-		free(output_filename);
 		return false;
 	}
 
@@ -567,11 +584,23 @@ bool decrypt_file(const char *path, const char *passphrase)
 	//Read the whole file into a buffer(except hmac) and verify the hmac
 	long len_before_hmac = (filesize - HMAC_SIZE) + 1;
 	char buffer[len_before_hmac];
-	unsigned char mac[HMAC_SIZE];
+	unsigned char *mac = NULL; //mac[HMAC_SIZE];
+	
+	mac = malloc(HMAC_SIZE * sizeof(char));
+	
+	if(mac == NULL) {
+		fprintf(stderr, "Malloc failed.\n");
+		free(IV);
+		free(salt);
+		fclose(fIn);
+		
+		return false;
+	}
+	
 	fread(buffer, len_before_hmac - 1, 1, fIn);
 	fread(mac, HMAC_SIZE, 1, fIn);
 	fseek(fIn, 0, SEEK_SET);
-
+	
 	//Read bcrypt hash, iv and salt from the beginning of the file
 	fread(hash, BCRYPT_HASHSIZE, 1, fIn);
 	//Skip the magic header, file's already checked
@@ -586,7 +615,8 @@ bool decrypt_file(const char *path, const char *passphrase)
 		free(IV);
 		free(salt);
 		fclose(fIn);
-
+		free(mac);
+		
 		return false;
 	}
 
@@ -595,18 +625,21 @@ bool decrypt_file(const char *path, const char *passphrase)
 
 	//Verify hmac
 	unsigned char *new_mac = get_data_hmac(buffer, len_before_hmac - 1, key);
+
 	if(!verify_hmac(mac, new_mac)) {
 		fprintf(stderr, "Data was tampered. Aborting decryption\n");
 		free(new_mac);
 		free(IV);
 		free(salt);
 		fclose(fIn);
-
+		free(mac);
+		
 		return false;
 	}
 
 	free(new_mac);
-
+	free(mac);
+	
 	if(!success) {
 		fprintf(stderr, "Failed to get new key\n");
 		free(IV);
