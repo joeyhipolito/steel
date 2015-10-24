@@ -191,6 +191,16 @@ void close_database()
 	char *ptr = passphrase;
 	char pass2[pwdlen];
 	char *ptr2 = pass2;
+	char *path = NULL;
+	
+	path = read_path_from_lockfile();
+	
+	if(path == NULL) {
+		fprintf(stderr, "No open databases found.\n");
+		return;
+	}
+	
+	free(path);
 	
 	my_getpass(MASTER_PWD_PROMPT, &ptr, &pwdlen, stdin);
 	my_getpass(MASTER_PWD_PROMPT_RETRY, &ptr2, &pwdlen, stdin);

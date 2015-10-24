@@ -262,7 +262,7 @@ bool verify_hmac(const unsigned char *old, const unsigned char *new)
 	if (len1 != len2)
 		return false;
 	
-	//It also must be the same as hmac_size
+	//They also must be the same as hmac_size
 	if(len1 != HMAC_SIZE)
 		return false;
 
