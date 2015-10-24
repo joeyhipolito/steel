@@ -261,6 +261,10 @@ bool verify_hmac(const unsigned char *old, const unsigned char *new)
 	//First of all, they must the same size.
 	if (len1 != len2)
 		return false;
+	
+	//It also must be the same as hmac_size
+	if(len1 != HMAC_SIZE)
+		return false;
 
 	u1 = old;
 	u2 = new;
