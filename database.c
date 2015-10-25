@@ -186,7 +186,7 @@ static bool db_make_sanity_check(char *path)
 	}
 
 	if(!db_file_exists(path)) {
-		fprintf(stderr, "%s: does not exists\n", path);
+		fprintf(stderr, "%s: does not exist\n", path);
 		free(path);
 		return false;
 	}
