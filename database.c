@@ -315,13 +315,8 @@ bool db_add_entry(Entry_t *entry)
 	path = read_path_from_lockfile();
 	filep = path;
 	
-	if(!db_make_sanity_check(filep)) {
-		
-		if(path != NULL)
-			free(filep);
-		
+	if(!db_make_sanity_check(filep))
 		return false;
-	}
 
 	rc = sqlite3_open(path, &db);
 
@@ -367,13 +362,8 @@ Entry_t *db_get_all_entries()
 
 	path = read_path_from_lockfile();
 	
-	if(!db_make_sanity_check(path)) {
-		
-		if(path != NULL)
-			free(path);
-		
+	if(!db_make_sanity_check(path))
 		return NULL;
-	}
 
 	rc = sqlite3_open(path, &db);
 
@@ -417,13 +407,8 @@ int db_get_next_id()
 
 	path = read_path_from_lockfile();
 	
-	if(!db_make_sanity_check(path)) {
-		
-		if(path != NULL)
-			free(path);
-		
+	if(!db_make_sanity_check(path))
 		return -1;
-	}
 
 	rc = sqlite3_open(path, &db);
 
@@ -465,13 +450,9 @@ Entry_t *db_get_entry_by_id(int id)
 	
 	path = read_path_from_lockfile();
 	
-	if(!db_make_sanity_check(path)) {
-		
-		if(path != NULL)
-			free(path);
-		
+	if(!db_make_sanity_check(path))
 		return NULL;
-	}
+	
 	
 	rc = sqlite3_open(path, &db);
 
@@ -518,13 +499,9 @@ bool db_delete_entry_by_id(int id, bool *success)
 	
 	path = read_path_from_lockfile();
 	
-	if(!db_make_sanity_check(path)) {
-		
-		if(path != NULL)
-			free(path);
-		
+	if(!db_make_sanity_check(path))
 		return false;
-	}
+	
 	
 	rc = sqlite3_open(path, &db);
 
@@ -573,13 +550,8 @@ bool db_update_entry(int id, Entry_t *entry)
 	
 	path = read_path_from_lockfile();
 	
-	if(!db_make_sanity_check(path)) {
-		
-		if(path != NULL)
-			free(path);
-		
+	if(!db_make_sanity_check(path))
 		return false;
-	}
 	
 	rc = sqlite3_open(path, &db);
 
