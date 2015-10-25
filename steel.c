@@ -51,6 +51,7 @@ OPTIONS\n\
 -o, --open              <path>                        Decrypt existing database\n\
 -c, --close                                           Encrypt open database\n\
 -a, --add               <title> <user> <url> <notes>  Add new entry to database\n\
+-a, --add               -I                            Add new entry interactively\n\
 -s, --show              <id>                          Show entry by id\n\
 -g, --gen-pass          <length> [count]              Generate secure password\n\
 -d, --delete            <id>                          Delete an entry by id\n\
@@ -169,29 +170,34 @@ int main(int argc, char *argv[])
 			break;
 		}
 		case 'a': {
-			//Has user?
-			if(!argv[optind]) {
-				fprintf(stderr, "Missing option user.\n");
-				return 0;
+			//Ask input interactively?
+			if(strcmp(optarg, "-I") == 0) {
+				add_new_entry_interactive();
 			}
-			//Has url?
-			if(!argv[optind + 1]) {
-				fprintf(stderr, "Missing option url.\n");
-				return 0;
+			else {
+				
+				if(!argv[optind]) {
+					fprintf(stderr, "Missing option user.\n");
+					return 0;
+				}
+				
+				if(!argv[optind + 1]) {
+					fprintf(stderr, "Missing option address.\n");
+					return 0;
+				}
+				
+				if(!argv[optind + 2]) {
+					fprintf(stderr, "Missing option notes.\n");
+					return 0;
+				}
+				
+				char *title = optarg;
+				char *user = argv[optind];
+				char *url = argv[optind + 1];
+				char *note = argv[optind + 2];
+
+				add_new_entry(title, user, url, note);
 			}
-			//Has note?
-			if(!argv[optind + 2]) {
-				fprintf(stderr, "Missing option note\n");
-				return 0;
-			}
-
-			char *title = optarg;
-			char *user = argv[optind];
-			char *url = argv[optind + 1];
-			char *note = argv[optind + 2];
-
-			add_new_entry(title, user, url, note);
-
 			break;
 		}
 		case 'd':

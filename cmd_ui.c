@@ -35,6 +35,21 @@
 //cmd_ui.c implements simple interface for command line version
 //of Steel. All functions in here are only called from main()
 
+//Removes new line character from a string.
+static void strip_newline_str(char *str) {
+	
+	char *i = str;
+	char *j = str;
+
+	while (*j != '\0') {
+		*i = *j++;
+		if (*i != '\n')
+			i++;
+	}
+
+	*i = '\0';
+}
+
 //Function works like strstr, but ignores the case.
 //There's a function strcasestr, but it's nonstandard
 //GNU extension, so let's not use that.
@@ -243,6 +258,65 @@ void add_new_entry(char *title, char *user, char *url, char *note)
 	}
 		
 	Entry_t *entry = list_create(title, user, pass, url, note, id, NULL);
+
+	if(!db_add_entry(entry)) {
+		fprintf(stderr, "Failed to add a new entry.\n");
+		return;
+	}
+	
+	list_free(entry);
+}
+
+//Add new entry interactively
+void add_new_entry_interactive()
+{
+	if(!steel_tracker_file_exists())
+		return;
+	
+	char title[255] = {0};
+	char user[255] = {0};
+	char url[255] = {0};
+	char notes[255] = {0};
+	size_t pwdlen = 255;
+	char pass[pwdlen];
+	char *ptr = pass;
+	char pass2[pwdlen];
+	char *ptr2 = pass2;
+	int id;
+	
+	id = db_get_next_id();
+	
+	if(id == -1) {
+		fprintf(stderr, "Failed to add a new entry.\n");
+		return;
+	}
+	
+	fprintf(stdout, "Title: ");
+	fgets(title, 255, stdin);
+	fprintf(stdout, "Username: ");
+	fgets(user, 255, stdin);
+	fprintf(stdout, "Address: ");
+	fgets(url, 255, stdin);
+	fprintf(stdout, "Notes: ");
+	fgets(notes, 255, stdin);
+	
+	my_getpass(ENTRY_PWD_PROMPT, &ptr, &pwdlen, stdin);
+	my_getpass(ENTRY_PWD_PROMPT_RETRY, &ptr2, &pwdlen, stdin);
+	
+	if(strcmp(pass, pass2) != 0) {
+		fprintf(stderr, "Passphrases do not match.\n");
+		return;
+	}
+	
+	strip_newline_str(title);
+	strip_newline_str(user);
+	strip_newline_str(url);
+	strip_newline_str(notes);
+	
+	printf("%s\n", title);
+	
+	Entry_t *entry = list_create(title, user, pass, url, 
+				     notes, id, NULL);
 
 	if(!db_add_entry(entry)) {
 		fprintf(stderr, "Failed to add a new entry.\n");
