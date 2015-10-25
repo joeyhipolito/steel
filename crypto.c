@@ -235,9 +235,9 @@ static unsigned int rand_between(unsigned int min, unsigned int max)
 	const unsigned int buckets = RAND_MAX / range;
 	const unsigned int limit = buckets * range;
 
-	/* Create equal size buckets all in a row, then fire randomly towards
-	* the buckets until you land in one of them. All buckets are equally
-	* likely. If you land off the end of the line of buckets, try again. */
+	//Create equal size buckets all in a row, then fire randomly towards
+	//the buckets until you land in one of them. All buckets are equally
+	//likely. If you land off the end of the line of buckets, try again.
 	do
 	{
 		r = rand();

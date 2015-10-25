@@ -664,7 +664,21 @@ bool db_shred(const char *path)
 //***********************************
 static int cb_get_entries(void *list, int argc, char **argv, char **column_name)
 {	
-	//Insert entries into the list
+	//Let's not allow NULLs
+	if(argv[0] == NULL)
+		return 1;
+	if(argv[1] == NULL)
+		return 1;
+	if(argv[2] == NULL)
+		return 1;
+	if(argv[3] == NULL)
+		return 1;
+	if(argv[4] == NULL)
+		return 1;
+	if(argv[5] == NULL)
+		return 1;
+	
+	//Add data to the list
 	list_add(list, argv[0], argv[1], argv[2], argv[3], argv[4], atoi(argv[5]));
 
 	return 0;	
