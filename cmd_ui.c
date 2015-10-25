@@ -379,13 +379,21 @@ void delete_entry(int id)
 		return;
 	
 	bool success = false;
+	char ch;
 	
-	if(!db_delete_entry_by_id(id, &success)) {
-		fprintf(stderr, "Entry deletion failed.\n");
-	}
-	else {
-		if(!success)
-			fprintf(stderr, "No entry found with id %d.\n", id);
+	fprintf(stdout, "Are you sure? (y/N) ");
+	
+	ch = getc(stdin);
+	
+	if(ch == 'y' || ch == 'Y') {
+	
+		if(!db_delete_entry_by_id(id, &success)) {
+			fprintf(stderr, "Entry deletion failed.\n");
+		}
+		else {
+			if(!success)
+				fprintf(stderr, "No entry found with id %d.\n", id);
+		}
 	}
 }
 
