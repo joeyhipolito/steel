@@ -289,7 +289,7 @@ void list_print(Entry_t *list)
 		printf("%s\t\t%d\n", "Id", tmp->id);
 		printf("%s\t\t%s\n", "Title", tmp->title);
 		printf("%s\t%s\n", "Username", tmp->user);
-		printf("%s\t%s\n", "Passphrase", tmp->pwd);
+		printf("%s\t%s\n", "Passphrase", "******");
 		printf("%s\t\t%s\n", "Address", tmp->url);
 		printf("%s\t\t%s\n", "Notes", tmp->notes);
 		
@@ -318,7 +318,7 @@ void list_print_one(Entry_t *cursor)
 	printf("%s\t\t%d\n", "Id", cursor->id);
 	printf("%s\t\t%s\n", "Title", cursor->title);
 	printf("%s\t%s\n", "Username", cursor->user);
-	printf("%s\t%s\n", "Passphrase", cursor->pwd);
+	printf("%s\t%s\n", "Passphrase", "******");
 	printf("%s\t\t%s\n", "Address", cursor->url);
 	printf("%s\t\t%s\n", "Notes", cursor->notes);
 	
