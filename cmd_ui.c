@@ -312,9 +312,7 @@ void add_new_entry_interactive()
 	strip_newline_str(user);
 	strip_newline_str(url);
 	strip_newline_str(notes);
-	
-	printf("%s\n", title);
-	
+		
 	Entry_t *entry = list_create(title, user, pass, url, 
 				     notes, id, NULL);
 
