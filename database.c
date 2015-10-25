@@ -39,6 +39,7 @@
 static int cb_get_entries(void *list, int argc, char **argv, char **column_name);
 static int cb_get_next_id(void *id, int argc, char **argv, char **column_name);
 static int cb_get_by_id(void *list, int argc, char **argv, char **column_name);
+static int cb_check_integrity(void *notused, int argc, char **argv, char **column_name);
 
 //Returns true is file exists and false if not.
 //Function should be portable.
@@ -173,6 +174,39 @@ char *read_path_from_lockfile()
 	return line;
 }
 
+//Run integrity check for the database to detect
+//malformed and corrupted databases. Returns true
+//if everything is ok, false if something is wrong.
+static bool db_check_integrity(const char *path)
+{
+	sqlite3 *db;
+	char *error = NULL;
+	int retval;
+	char *sql;
+	
+	retval = sqlite3_open(path, &db);
+
+	if(retval) {
+		fprintf(stderr, "Can't initialize: %s\n", sqlite3_errmsg(db));
+		return false;
+	}
+	
+	sql = "pragma integrity_check;";
+	
+	retval = sqlite3_exec(db, sql, cb_check_integrity, 0, &error);
+
+	if(retval != SQLITE_OK) {
+		fprintf(stderr, "SQL error: %s\n", error);
+		sqlite3_free(error);
+		sqlite3_close(db);
+		return false;
+	}
+	
+	sqlite3_close(db);
+	
+	return true;
+}
+
 //This function is used of to make basic checks before operating with there
 //database. Does the file exists? Is it encrypted? If the database is
 //available for writing or reading returns true, otherwise false.
@@ -189,7 +223,7 @@ static bool db_make_sanity_check(char *path)
 		fprintf(stderr, "%s: does not exist\n", path);
 		//As the path does not exist anymore, just remove
 		//the lock file to allow user to create a new db.
-		db_remove_lockfile();
+		//db_remove_lockfile();
 		free(path);
 		return false;
 	}
@@ -200,6 +234,13 @@ static bool db_make_sanity_check(char *path)
 		//there's something wrong. Lock file should not even exists when
 		//database is encrypted.
 		fprintf(stderr, "%s: is encrypted.\n", path);
+		free(path);
+		return false;
+	}
+	
+	//Finally run integrity check
+	if(!db_check_integrity(path)) {
+		fprintf(stderr, "Corrupted database %s.\n", path);
 		free(path);
 		return false;
 	}
@@ -678,6 +719,22 @@ static int cb_get_by_id(void *list, int argc, char **argv, char **column_name)
 	
 	return 0;
 }
+
+static int cb_check_integrity(void *notused, int argc, char **argv, char **column_name)
+{
+	for(int i = 0; i < argc; i++) {
+		if(strcmp(column_name[i], "integrity_check") == 0) {
+			
+			char *result = argv[i];
+			
+			if(strcmp(result, "ok") != 0)
+				return 1;
+		}
+	}
+	
+	return 0;
+}
+
 //********************************
 //End database callback functions
 //********************************
