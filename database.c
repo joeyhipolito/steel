@@ -187,6 +187,9 @@ static bool db_make_sanity_check(char *path)
 
 	if(!db_file_exists(path)) {
 		fprintf(stderr, "%s: does not exist\n", path);
+		//As the path does not exist anymore, just remove
+		//the lock file to allow user to create a new db.
+		db_remove_lockfile();
 		free(path);
 		return false;
 	}
