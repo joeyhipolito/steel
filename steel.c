@@ -43,7 +43,7 @@ static void usage()
 #define HELP "\
 SYNOPSIS\n\
 \n\
-steel [options]\n\
+steel [-P] <options>\n\
 \n\
 OPTIONS\n\
 \n\
@@ -66,6 +66,7 @@ OPTIONS\n\
 -b, --backup            <source> <destination>        Backup database\n\
 -B, --import-backup     <source> <destination>        Import database backup\n\
 -V, --version                                         Show program version\n\
+-P, --list-with-passphrase                            Show passphrases in listings\n\
 -p, --show-passphrase   <id>                          Show an entry passphrase\n\
 -u, --show-username     <id>                          Show an entry username\n\
 -U, --show-url          <id>                          Show an entry url\n\
@@ -87,6 +88,7 @@ http://www.gnu.org/licenses\n\
 int main(int argc, char *argv[])
 {
 	int option;
+	bool list_passphrases = false;
 
 	if(argc == 1) {
 		usage();
@@ -117,13 +119,14 @@ int main(int argc, char *argv[])
 			{"show-username",          required_argument, 0, 'u'},
 			{"show-url",               required_argument, 0, 'U'},
 			{"show-notes",             required_argument, 0, 'n'},
+			{"list-with-passphrase",   no_argument,       0, 'P'},
 			{0, 0, 0, 0}
 
 		};
 
 		int option_index = 0;
 
-		option = getopt_long(argc, argv, "i:b:B:o:cs:g:a:d:r:f:lR:SVp:u:U:n:h",
+		option = getopt_long(argc, argv, "i:b:B:o:cs:g:a:d:r:f:lR:SVp:Pu:U:n:h",
 				     long_options, &option_index);
 
 		if(option == -1)
@@ -154,7 +157,7 @@ int main(int argc, char *argv[])
 			close_database();
 			break;
 		case 's':
-			show_one_entry(atoi(optarg));
+			show_one_entry(atoi(optarg), list_passphrases);
 			break;
 		case 'g': {
 			int count = 1;
@@ -225,10 +228,13 @@ int main(int argc, char *argv[])
 			break;
 		}
 		case 'f':
-			find_entries(optarg);
+			find_entries(optarg, list_passphrases);
 			break;
 		case 'p':
 			show_passphrase_only(atoi(optarg));
+			break;
+		case 'P':
+			list_passphrases = true;
 			break;
 		case 'u':
 			show_username_only(atoi(optarg));
@@ -240,7 +246,7 @@ int main(int argc, char *argv[])
 			show_notes_only(atoi(optarg));
 			break;
 		case 'l':
-			show_all_entries();
+			show_all_entries(list_passphrases);
 			break;
 		case 'R':
 			remove_database(optarg);

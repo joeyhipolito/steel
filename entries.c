@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include "entries.h"
 
@@ -275,7 +276,7 @@ static int list_calculate_longest_str(Entry_t *list)
 //Print whole list from the cursor pointed by list.
 //Print is formatted with a nice output and should be easy to
 //read.
-void list_print(Entry_t *list)
+void list_print(Entry_t *list, bool show_passphrase)
 {
 	//Take copy of the head pointer.
 	Entry_t *tmp = list->next;
@@ -289,7 +290,12 @@ void list_print(Entry_t *list)
 		printf("%s\t\t%d\n", "Id", tmp->id);
 		printf("%s\t\t%s\n", "Title", tmp->title);
 		printf("%s\t%s\n", "Username", tmp->user);
-		printf("%s\t%s\n", "Passphrase", "******");
+		
+		if(show_passphrase)
+			printf("%s\t%s\n", "Passphrase", tmp->pwd);
+		else
+			printf("%s\t%s\n", "Passphrase", "******");
+		
 		printf("%s\t\t%s\n", "Address", tmp->url);
 		printf("%s\t\t%s\n", "Notes", tmp->notes);
 		
@@ -305,7 +311,7 @@ void list_print(Entry_t *list)
 }
 
 //Print current cursor.
-void list_print_one(Entry_t *cursor)
+void list_print_one(Entry_t *cursor, bool show_passphrase)
 {
 	int len = list_calculate_longest_str_cursor(cursor);
 	
@@ -318,7 +324,12 @@ void list_print_one(Entry_t *cursor)
 	printf("%s\t\t%d\n", "Id", cursor->id);
 	printf("%s\t\t%s\n", "Title", cursor->title);
 	printf("%s\t%s\n", "Username", cursor->user);
-	printf("%s\t%s\n", "Passphrase", "******");
+	
+	if(show_passphrase)
+		printf("%s\t%s\n", "Passphrase", cursor->pwd);
+	else
+		printf("%s\t%s\n", "Passphrase", "******");
+	
 	printf("%s\t\t%s\n", "Address", cursor->url);
 	printf("%s\t\t%s\n", "Notes", cursor->notes);
 	
