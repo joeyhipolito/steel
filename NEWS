@@ -1,3 +1,23 @@
+1.1: 2015-10-26
+
+     Version 1.1 released.
+     
+     This releases fixes multiple bugs in Steel. It also has some usability 
+     changes to make Steel easier to use.
+     
+     *Security: Checking HMAC is now timing safe.
+     *Security: Fixes multiple bugs found by Brian Carpenter, including bugs 
+      leading to crash when certain conditions are met. Thanks Brian!
+     *Security: Passphrases are not visible by default in the output.
+     *Adds support for OS X, mostly implemented by Antti Kuosmanen. Thanks Antti!
+     *Search is no longer case sensitive.
+     *Steel can now generate multiple passwords at once.
+     *New entries can be now added interactively.
+     *Error messages should make more sense now.
+     
+     Generally, this release is an important update and everyone should upgrade. 
+     Distros should package this version (or any later one). 
+
 1.0: 2015-10-20
 
     Version 1.0 released.
