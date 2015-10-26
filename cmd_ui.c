@@ -329,7 +329,7 @@ void add_new_entry_interactive()
 void show_all_entries(int show_passphrase)
 {
 	bool show_pass = false;
-	printf("%d\n", show_passphrase);
+
 	if(show_passphrase)
 		show_pass = true;
 	

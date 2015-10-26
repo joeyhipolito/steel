@@ -255,23 +255,12 @@ bool verify_hmac(const unsigned char *old, const unsigned char *new)
 	int ret;
 	int i;
 
-	int len1 = strlen((char*)old);
-	int len2 = strlen((char*)new);
-
-	//First of all, they must the same size.
-	if (len1 != len2)
-		return false;
-	
-	//They also must be the same as hmac_size
-	if(len1 != HMAC_SIZE)
-		return false;
-
 	u1 = old;
 	u2 = new;
 
 	ret = 0;
 
-	for (i = 0; i < len1; ++i)
+	for (i = 0; i < HMAC_SIZE; ++i)
 		ret |= (u1[i] ^ u2[i]);
 
 	if(ret != 0)
