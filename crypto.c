@@ -130,7 +130,7 @@ static Key_t generate_key(const char *passphrase, bool *success)
 	int ret;
 	char *keybytes = NULL;
 	Key_t key;
-	char salt[BCRYPT_HASHSIZE];
+	char salt[BCRYPT_HASHSIZE] = {0};
 	char hash[BCRYPT_HASHSIZE] = {0};
 
 	keybytes = calloc(1, KEY_SIZE);

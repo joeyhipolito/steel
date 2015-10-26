@@ -326,23 +326,33 @@ void add_new_entry_interactive()
 
 //Print all available entries to stdin.
 //Database must not be encrypted.
-void show_all_entries(bool show_passphrase)
+void show_all_entries(int show_passphrase)
 {
+	bool show_pass = false;
+	printf("%d\n", show_passphrase);
+	if(show_passphrase)
+		show_pass = true;
+	
 	if(!steel_tracker_file_exists())
 		return;
 	
 	Entry_t *list = db_get_all_entries();
 	
 	if(list != NULL) {
-		list_print(list, show_passphrase);
+		list_print(list, show_pass);
 		list_free(list);
 	}
 }
 
 //Print one entry by id to stdin, if found.
 //Database must not be encrypted.
-void show_one_entry(int id, bool show_passphrase)
+void show_one_entry(int id, int show_passphrase)
 {
+	bool show_pass = false;
+	
+	if(show_passphrase)
+		show_pass = true;
+	
 	if(!steel_tracker_file_exists())
 		return;
 	
@@ -361,7 +371,7 @@ void show_one_entry(int id, bool show_passphrase)
 		next = head->next;
 		
 		if(next != NULL) {
-			list_print_one(next, show_passphrase);
+			list_print_one(next, show_pass);
 		}
 		else {
 			printf("No entry found with id %d.\n", id);
@@ -399,8 +409,13 @@ void delete_entry(int id)
 
 //Print all entries to stdin which has data matching with search.
 //Database must not be encrypted.
-void find_entries(const char *search, bool show_passphrase)
+void find_entries(const char *search, int show_passphrase)
 {
+	bool show_pass = false;
+	
+	if(show_passphrase)
+		show_pass = true;
+	
 	if(!steel_tracker_file_exists())
 		return;
 	
@@ -429,7 +444,7 @@ void find_entries(const char *search, bool show_passphrase)
 		if(title != NULL || user != NULL || url != NULL || 
 			notes != NULL) {
 			
-			list_print_one(new_head, show_passphrase);
+			list_print_one(new_head, show_pass);
 		}
 		
 		if(title != NULL)

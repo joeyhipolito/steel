@@ -5,7 +5,7 @@
 .SH NAME
 steel \- command line password manager
 .SH SYNOPSIS
-steel [-P] <OPTIONS>
+steel [FLAGS] <OPTIONS>
 .SH DESCRIPTION
 Steel is a command line password manager for Unix like 
 operating systems.
@@ -41,8 +41,6 @@ Backup database
 Import database backup
 .IP "-V, --version"
 Show program version
-.IP "-P, --list-with-passphrase"
-Show passphrases in listings
 .IP "-p, --show-passphrase <id>"
 Show an entry passphrase
 .IP "-u, --show-username <id>"
@@ -52,7 +50,10 @@ Show an entry url
 .IP "-n, --show-notes <id>"
 Show an entry notes
 .IP "-h, --help"
-Show short help and exit.
+Show short help and exit
+.SH FLAGS
+.IP "--with-passphrases"
+Show passphrases in listings
 .SH EXAMPLES
 Create a new database:
        steel --init-new "/path/to/file.db"
@@ -85,7 +86,7 @@ Copy passphrase to X-Window system clipboard:
 You will need to install xclip, if it's not already installed on your system.
 .PP
 If you want to export all entries to a file:
-       steel --list-with-passphrase --list-all > file.txt
+       steel --with-passphrases --list-all > file.txt
 .SH NOTES
 Steel does not have a concept of "change master passphrase". When you close (encrypt)
 an open database using --close you can type a master passphrase. This passphrase
