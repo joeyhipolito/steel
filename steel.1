@@ -1,7 +1,7 @@
 .\" Manpage for steel.
 .\" Any errors or typos, contact niko@byteptr.com.
 
-.TH man 1 "18 Oct 2015" "1.0" "steel man page"
+.TH man 1 "26 Oct 2015" "1.1" "steel man page"
 .SH NAME
 steel \- command line password manager
 .SH SYNOPSIS
@@ -24,9 +24,10 @@ Add new entry to database interactively
 Generate secure password
 .IP "-d, --delete <id>"
 Delete an entry by id
-.IP "-r, --replace <id> <what> [content]"
+.IP "-r, --replace <id> <what> [new content]"
 Replace an entry data. <what> can be either
 "user", "title", "url", "notes" or "passphrase".
+For "passphrase" content is not needed.
 .IP "-R, --shred-db <path>"
 Shred database
 .IP "-f, --find <search>"

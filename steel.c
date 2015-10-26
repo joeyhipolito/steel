@@ -25,7 +25,7 @@
 #include <getopt.h>
 #include "cmd_ui.h"
 
-#define VERSION 1.0
+#define VERSION 1.1
 
 static void version_print()
 {
