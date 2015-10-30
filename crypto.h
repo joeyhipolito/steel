@@ -28,11 +28,11 @@
 
 typedef struct Key
 {
-	//C99 does not support variable size
-	//arrays in the file scope
+    //C99 does not support variable size
+    //arrays in the file scope
 	
-	char data[32]; //KEY_SIZE
-	char salt[64];  //BCRYPT_HASHSIZE
+    char data[32]; //KEY_SIZE
+    char salt[64];  //BCRYPT_HASHSIZE
 
 } Key_t;
 

@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2015 Niko Rosvall <niko@byteptr.com>
  *
@@ -23,23 +24,23 @@
 
 typedef struct Entry {
 
-	char *title;
-	char *user;
-	char *pwd;
-	char *url;
-	char *notes;
-        int id;
+    char *title;
+    char *user;
+    char *pwd;
+    char *url;
+    char *notes;
+    int id;
 
-	struct Entry *next;
+    struct Entry *next;
 
 } Entry_t;
 
 Entry_t *list_create(const char *title, const char *user,
-			const char *pass, const char *url, const char *notes,
-                        int id, Entry_t *next);
+		     const char *pass, const char *url, const char *notes,
+		     int id, Entry_t *next);
 Entry_t *list_add(Entry_t *list, const char *title, const char *user,
-			const char *pass, const char *url, const char *notes,
-                        int id);
+		  const char *pass, const char *url, const char *notes,
+		  int id);
 
 Entry_t *list_search_by_title(Entry_t *list, const char *title);
 Entry_t *list_search_by_id(Entry_t *list, int id);

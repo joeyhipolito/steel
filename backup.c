@@ -28,91 +28,105 @@
 //Function to copy a file from source to destination.
 //Assumes that source exists and destionation does not exist.
 //Returns true on success, false on failure.
-static bool copy_file(const char *source, const char *dest)
+static bool
+copy_file(const char *source, const char *dest)
 {
-	FILE *in = NULL;
-	FILE *out = NULL;
-	char block;
+    FILE *in = NULL;
+    FILE *out = NULL;
+    char block;
 	
-	in = fopen(source, "r");
+    in = fopen(source, "r");
 	
-	if(in == NULL) {
-		fprintf(stderr, "Failed to open %s.\n", source);
-		return false;
-	}
+    if(in == NULL)
+    {
+	fprintf(stderr, "Failed to open %s.\n", source);
+	return false;
+    }
 	
-	out = fopen(dest, "w");
+    out = fopen(dest, "w");
 	
-	if(out == NULL) {
-		fprintf(stderr, "Failed to open %s.\n", dest);
-		fclose(in);
-		return false;
-	}
-
-	while(fread(&block, 1, 1, in) == 1)
-		fwrite(&block, 1, 1, out);
-	
+    if(out == NULL)
+    {
+	fprintf(stderr, "Failed to open %s.\n", dest);
 	fclose(in);
-	fclose(out);
+	return false;
+    }
+
+    while(fread(&block, 1, 1, in) == 1)
+	fwrite(&block, 1, 1, out);
 	
-	return true;
+    fclose(in);
+    fclose(out);
+	
+    return true;
 }
+
 //Take a backup of database file pointed by source and copy it
 //to the path pointed by dest. If source is not encrypted function
 //will abort and ask user to encrypt the file first. This is simply
 //to enforce security. It's not a good idea to backup open passphrase
 //databases. Returns true on success, false on failure.
-bool backup_export(const char *source, const char *dest)
+bool
+backup_export(const char *source, const char *dest)
 {
-	if(!db_file_exists(source)) {
-		fprintf(stderr, "%s does not exist.\n", source);
-		return false;
-	}
+    if(!db_file_exists(source))
+    {
+	fprintf(stderr, "%s does not exist.\n", source);
+	return false;
+    }
 	
-	if(db_file_exists(dest)) {
-		fprintf(stderr, "%s already exists.\n", dest);
-		return false;
-	}
+    if(db_file_exists(dest))
+    {
+	fprintf(stderr, "%s already exists.\n", dest);
+	return false;
+    }
 	
-	if(!is_file_encrypted(source)) {
-		fprintf(stdout, "Encrypt the file first before taking a backup.\n");
-		return false;
-	}
+    if(!is_file_encrypted(source))
+    {
+	fprintf(stdout, "Encrypt the file first before taking a backup.\n");
+	return false;
+    }
 	
-	if(!copy_file(source, dest)) {
-		fprintf(stderr, "Backing up %s failed.\n", source);
-		return false;
-	}
+    if(!copy_file(source, dest))
+    {
+	fprintf(stderr, "Backing up %s failed.\n", source);
+	return false;
+    }
 	
-	return true;
+    return true;
 }
 
 //Import backup database pointed by path. Function also adds
 //the database into the steel_dbs file Steel to track it's status.
-bool backup_import(const char *source, const char *dest)
+bool
+backup_import(const char *source, const char *dest)
 {
-	if(!db_file_exists(source)) {
-		fprintf(stderr, "%s does not exist.\n", source);
-		return false;
-	}
+    if(!db_file_exists(source))
+    {
+	fprintf(stderr, "%s does not exist.\n", source);
+	return false;
+    }
 	
-	if(db_file_exists(dest)) {
-		fprintf(stderr, "%s already exists.\n", dest);
-		return false;
-	}
+    if(db_file_exists(dest))
+    {
+	fprintf(stderr, "%s already exists.\n", dest);
+	return false;
+    }
 	
-	if(!is_file_encrypted(source)) {
-		fprintf(stdout, "Backup file not encrypted.\nAre you sure you're" \
+    if(!is_file_encrypted(source))
+    {
+	fprintf(stdout, "Backup file not encrypted.\nAre you sure you're" \
 		" importing Steel backup file?\n");
-		return false;
-	}
+	return false;
+    }
 	
-	if(!copy_file(source, dest)) {
-		fprintf(stderr, "Backing up %s failed.\n", source);
-		return false;
-	}
+    if(!copy_file(source, dest))
+    {
+	fprintf(stderr, "Backing up %s failed.\n", source);
+	return false;
+    }
 	
-	status_set_tracking(dest);
+    status_set_tracking(dest);
 		
-	return true;
+    return true;
 }
