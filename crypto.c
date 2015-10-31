@@ -33,7 +33,7 @@
 #endif
 
 #include "crypto.h"
-#include "bcrypt/bcrypt.h"
+#include "bcrypt.h"
 
 //Our magic number that's written into the
 //encrypted file. Used to determine if the file
