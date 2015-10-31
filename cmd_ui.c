@@ -46,6 +46,7 @@ strip_newline_str(char *str)
     while (*j != '\0')
     {
 	*i = *j++;
+
 	if (*i != '\n')
 	    i++;
     }

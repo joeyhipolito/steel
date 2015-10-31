@@ -28,8 +28,10 @@
 #include <time.h>
 
 #ifdef __MACH__
+
 #include <mach/clock.h>
 #include <mach/mach.h>
+
 #endif
 
 #include "crypto.h"
@@ -786,9 +788,7 @@ generate_pass(int length)
 #endif
 
     srand(tspec.tv_nsec);
-
     max = strlen(alpha) - 1;
-
     pass = calloc(1, (length + 1) * sizeof(char));
 
     if(pass == NULL)

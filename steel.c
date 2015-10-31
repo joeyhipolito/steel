@@ -104,10 +104,9 @@ main(int argc, char *argv[])
 
     while(true)
     {
-
 	static struct option long_options[] =
 	{
-	    {"with-passphrases", no_argument,       &list_passphrases, 1},
+	    {"with-passphrases", no_argument, &list_passphrases, 1},
 			
 	    {"init-new",         required_argument, 0, 'i'},
 	    {"backup",           required_argument, 0, 'b'},
@@ -281,7 +280,6 @@ main(int argc, char *argv[])
 	    usage();
 	    break;
 	}
-
     }
 
     return 0;

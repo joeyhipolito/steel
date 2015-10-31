@@ -547,9 +547,7 @@ db_get_entry_by_id(int id)
 	return NULL;
     }
 	
-    sql =
-	sqlite3_mprintf("select * from entries where id=%d;", id);
-
+    sql = sqlite3_mprintf("select * from entries where id=%d;", id);
     list = list_create("Title", "User", "Passphrase", "Address", "Id", -1, NULL);
 	
     rc = sqlite3_exec(db, sql, cb_get_by_id, list, &error);
@@ -599,9 +597,7 @@ db_delete_entry_by_id(int id, bool *success)
 	return false;
     }
 	
-    sql =
-	sqlite3_mprintf("delete from entries where id=%d;", id);
-
+    sql = sqlite3_mprintf("delete from entries where id=%d;", id);
     rc = sqlite3_exec(db, sql, NULL, 0, &error);
 
     if(rc != SQLITE_OK)
@@ -651,8 +647,7 @@ db_update_entry(int id, Entry_t *entry)
 	return false;
     }
 	
-    sql =
-	sqlite3_mprintf("update entries set title='%q',user='%q',passphrase='%q'" \
+    sql = sqlite3_mprintf("update entries set title='%q',user='%q',passphrase='%q'" \
 			",url='%q',notes='%q' where id=%d;", entry->title, 
 			entry->user, entry->pwd, entry->url, entry->notes, id);
 	
@@ -770,7 +765,20 @@ cb_get_next_id(void *id, int argc, char **argv, char **column_name)
 static int
 cb_get_by_id(void *list, int argc, char **argv, char **column_name)
 {
-	
+    //Let's not allow NULLs
+    if(argv[0] == NULL)
+	return 1;
+    if(argv[1] == NULL)
+	return 1;
+    if(argv[2] == NULL)
+	return 1;
+    if(argv[3] == NULL)
+	return 1;
+    if(argv[4] == NULL)
+	return 1;
+    if(argv[5] == NULL)
+	return 1;
+    
     list_add(list, argv[0], argv[1], argv[2], argv[3], argv[4], atoi(argv[5]));
 	
     return 0;
