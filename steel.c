@@ -89,7 +89,7 @@ http://www.gnu.org/licenses\n\
     printf(HELP);
 }
 
-//Program entry point.
+/*Program entry point.*/
 int
 main(int argc, char *argv[])
 {
@@ -185,7 +185,7 @@ main(int argc, char *argv[])
 	}
 	case 'a':
 	{
-	    //Ask input interactively?
+	    /*Ask input interactively*/
 	    if(strcmp(optarg, "-I") == 0)
 	    {
 		add_new_entry_interactive();
@@ -230,8 +230,9 @@ main(int argc, char *argv[])
 		return 0;
 	    }
 
-	    //Replacing passphrase does not need third argument
-	    //It will be asked separately by replace_part()
+	    /*Replacing passphrase does not need third argument
+	     *It will be asked separately by replace_part()
+	     */
 	    if(strcmp(argv[optind], "passphrase") != 0)
 	    {
 		if(!argv[optind + 1])

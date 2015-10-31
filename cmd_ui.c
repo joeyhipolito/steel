@@ -32,10 +32,11 @@
 #include "status.h"
 #include "backup.h"
 
-//cmd_ui.c implements simple interface for command line version
-//of Steel. All functions in here are only called from main()
+/*cmd_ui.c implements simple interface for command line version
+ *of Steel. All functions in here are only called from main()
+ */
 
-//Removes new line character from a string.
+/*Removes new line character from a string.*/
 static void
 strip_newline_str(char *str)
 {
@@ -54,10 +55,11 @@ strip_newline_str(char *str)
     *i = '\0';
 }
 
-//Function works like strstr, but ignores the case.
-//There's a function strcasestr, but it's nonstandard
-//GNU extension, so let's not use that.
-//Return value must be freed by the caller.
+/*Function works like strstr, but ignores the case.
+ *There's a function strcasestr, but it's nonstandard
+ *GNU extension, so let's not use that.
+ *Return value must be freed by the caller.
+ */
 static char *
 my_strcasestr(const char *str, const char *str2)
 {
@@ -108,8 +110,9 @@ my_strcasestr(const char *str, const char *str2)
     return retval;
 }
 
-//Simple helper function to check if there's an open database
-//available.
+/*Simple helper function to check if there's an open database
+ *available.
+ */
 static bool
 open_db_exist(const char *message)
 {
@@ -134,8 +137,9 @@ open_db_exist(const char *message)
     return false;
 }
 
-//Simple helper function to check if the steel_dbs file used for
-//tracking databases exists.
+/*Simple helper function to check if the steel_dbs file used for
+ *tracking databases exists.
+ */
 static bool
 steel_tracker_file_exists()
 {
@@ -149,8 +153,9 @@ steel_tracker_file_exists()
 	return false;
     }
 	
-    //We can use db_file_exists function to check any file existence.
-    //In the end, it's just simple check, not related to databases.
+    /*We can use db_file_exists function to check any file existence.
+     *In the end, it's just simple check, not related to databases.
+     */
     if(!db_file_exists(dbs))
     {
 	fprintf(stdout, "No databases found.\n");
@@ -163,9 +168,10 @@ steel_tracker_file_exists()
     return true;	
 }
 
-//Initialize new database and encrypt it.
-//Return false on failure, true on success.
-//Path must be a path to a file that does not exists.
+/*Initialize new database and encrypt it.
+ *Return false on failure, true on success.
+ *Path must be a path to a file that does not exists.
+ */
 bool
 init_database(const char *path)
 {
@@ -183,15 +189,16 @@ init_database(const char *path)
     return true;
 }
 
-//Decrypt database the database pointed by path.
-//If decryption fails, function returns false.
+/*Decrypt database the database pointed by path.
+ *If decryption fails, function returns false.
+ */
 bool
 open_database(const char *path)
 {
     if(!steel_tracker_file_exists())
 	return false;
 	
-    //Max passphrase length. Should be enough, really.
+    /*Max passphrase length. Should be enough, really.*/
     size_t pwdlen = 255;
     char passphrase[pwdlen];
     char *ptr = passphrase;
@@ -210,9 +217,10 @@ open_database(const char *path)
     return true;
 }
 
-//Encrypt the database. We don't need the path of the database,
-//as it's read from the steel_open file. Only one database can be
-//open at once.
+/*Encrypt the database. We don't need the path of the database,
+ *as it's read from the steel_open file. Only one database can be
+ *open at once.
+ */
 void
 close_database()
 {
@@ -248,7 +256,7 @@ close_database()
     db_close(passphrase);
 }
 
-//This is called from main. Adds new entry to the database.
+/*This is called from main(). Adds new entry to the database.*/
 void
 add_new_entry(char *title, char *user, char *url, char *note)
 {
@@ -256,7 +264,7 @@ add_new_entry(char *title, char *user, char *url, char *note)
 	return;
 	
     int id;
-    //Should be enough...
+    /*Should be enough...*/
     size_t pwdlen = 255;
     char pass[pwdlen];
     char *ptr = pass;
@@ -291,7 +299,7 @@ add_new_entry(char *title, char *user, char *url, char *note)
     list_free(entry);
 }
 
-//Add new entry interactively
+/*Add new entry interactively*/
 void
 add_new_entry_interactive()
 {
@@ -352,8 +360,9 @@ add_new_entry_interactive()
     list_free(entry);
 }
 
-//Print all available entries to stdin.
-//Database must not be encrypted.
+/*Print all available entries to stdin.
+ *Database must not be encrypted.
+ */
 void
 show_all_entries(int show_passphrase)
 {
@@ -374,8 +383,9 @@ show_all_entries(int show_passphrase)
     }
 }
 
-//Print one entry by id to stdin, if found.
-//Database must not be encrypted.
+/*Print one entry by id to stdin, if found.
+ *Database must not be encrypted.
+ */
 void
 show_one_entry(int id, int show_passphrase)
 {
@@ -400,7 +410,7 @@ show_one_entry(int id, int show_passphrase)
 	
     if(head != NULL)
     {
-	//Skip the first one, it only has our initialization data.
+	/*Skip the first one, it only has our initialization data.*/
 	next = head->next;
 		
 	if(next != NULL)
@@ -416,8 +426,9 @@ show_one_entry(int id, int show_passphrase)
     list_free(entry);
 }
 
-//Delete entry by id from the database.
-//Database must not be encrypted.
+/*Delete entry by id from the database.
+ *Database must not be encrypted.
+ */
 void
 delete_entry(int id)
 {
@@ -446,8 +457,9 @@ delete_entry(int id)
     }
 }
 
-//Print all entries to stdin which has data matching with search.
-//Database must not be encrypted.
+/*Print all entries to stdin which has data matching with search.
+ *Database must not be encrypted.
+ */
 void
 find_entries(const char *search, int show_passphrase)
 {
@@ -475,13 +487,13 @@ find_entries(const char *search, int show_passphrase)
 	
     while(new_head != NULL)
     {
-	//Search for matching data
+	/*Search for matching data*/
 	title = my_strcasestr(new_head->title, search);
 	user = my_strcasestr(new_head->user, search);
 	url = my_strcasestr(new_head->url, search);
 	notes = my_strcasestr(new_head->notes, search);
 		
-	//Check if we found something
+	/*Check if we found something*/
 	if(title != NULL || user != NULL || url != NULL || 
 	   notes != NULL)
 	{
@@ -507,16 +519,17 @@ find_entries(const char *search, int show_passphrase)
     list_free(list);
 }
 
-//Turns echo of from the terminal and asks for a passphrase.
-//Usually stream is stdin. Returns length of the passphrase,
-//passphrase is stored to lineptr. Lineptr must be allocated beforehand.
+/*Turns echo of from the terminal and asks for a passphrase.
+ *Usually stream is stdin. Returns length of the passphrase,
+ *passphrase is stored to lineptr. Lineptr must be allocated beforehand.
+ */
 size_t
 my_getpass(char *prompt, char **lineptr, size_t *n, FILE *stream)
 {
     struct termios old, new;
     int nread;
 
-    //Turn terminal echoing off.
+    /*Turn terminal echoing off.*/
     if(tcgetattr(fileno(stream), &old) != 0)
 	return -1;
 	
@@ -529,7 +542,7 @@ my_getpass(char *prompt, char **lineptr, size_t *n, FILE *stream)
     if(prompt)
 	printf("%s", prompt);
 
-    //Read the password.
+    /*Read the password.*/
     nread = getline(lineptr, n, stream);
 
     if(nread >= 1 && (*lineptr)[nread - 1] == '\n')
@@ -540,15 +553,16 @@ my_getpass(char *prompt, char **lineptr, size_t *n, FILE *stream)
 	
     printf("\n");
 
-    //Restore terminal echo.
+    /*Restore terminal echo.*/
     tcsetattr(fileno(stream), TCSAFLUSH, &old);
 
     return nread;
 }
 
-//Replace part of an entry pointed by id. "What" tells the function what to replace
-//with the new data. What can be "passphrase", "user", "title", "url" or "notes".
-//Database must not be encrypted.
+/*Replace part of an entry pointed by id. "What" tells the function what to replace
+ *with the new data. What can be "passphrase", "user", "title", "url" or "notes".
+ *Database must not be encrypted.
+ */
 void
 replace_part(int id, const char *what, const char *new_data)
 {
@@ -578,7 +592,7 @@ replace_part(int id, const char *what, const char *new_data)
 	return;
     }
 	
-    //Skip the initialization data
+    /*Skip the initialization data*/
     head = entry->next;
 	
     if(head == NULL)
@@ -595,8 +609,9 @@ replace_part(int id, const char *what, const char *new_data)
 	
     if(strcmp(what, "passphrase") == 0)
     {
-	//Ok, user want's to replace passphrase.
-	//Ask it, and verify it.
+	/*Ok, user want's to replace passphrase.
+	 *Ask it, and verify it.
+	 */
 	my_getpass(ENTRY_PWD_PROMPT, &ptr, &pwdlen, stdin);
 	my_getpass(ENTRY_PWD_PROMPT_RETRY, &ptr2, &pwdlen, stdin);
 	
@@ -638,9 +653,10 @@ replace_part(int id, const char *what, const char *new_data)
     list_free(entry);
 }
 
-//Function generates new password and prints it to stdout.
-//Does not use the database, so this function can be called
-//even if the database is encrypted.
+/*Function generates new password and prints it to stdout.
+ *Does not use the database, so this function can be called
+ *even if the database is encrypted.
+ */
 void
 generate_password(int length, int count)
 {
@@ -666,14 +682,14 @@ generate_password(int length, int count)
     }
 }
 
-//Show all tracked databases, including their encryption status and last
-//modified date.
+/*Show all tracked databases, including their encryption status and last
+ *modified date.
+ */
 void
 show_database_statuses()
 {
     int count;
     FILE *fp = NULL;
-    //char *line = NULL;
 	
     if(!steel_tracker_file_exists())
 	return;
@@ -711,7 +727,7 @@ show_database_statuses()
 	    fprintf(stderr, "Database file %s does not exist.\n", 
 		    line);
 	    fprintf(stderr, "Will disable tracking for it.\n");
-	    //Move to the entry of the steel_dbs
+	    /*Remove the entry from the steel_dbs*/
 	    status_del_tracking(line);
 	    count--;
 	    free(line);
@@ -732,10 +748,11 @@ show_database_statuses()
     fclose(fp);
 }
 
-//Shreds the database file pointed by path.
-//If the database is decrypted (currently the open one)
-//function will also remove .steel_open file.
-//Method will also remove entry from steel_dbs tracker file.
+/*Shreds the database file pointed by path.
+ *If the database is decrypted (currently the open one)
+ *function will also remove .steel_open file.
+ *Method will also remove entry from steel_dbs tracker file.
+ */
 void
 remove_database(const char *path)
 {
@@ -771,6 +788,7 @@ remove_database(const char *path)
     }
 }
 
+/*Backup the database*/
 void
 backup_database(const char *source, const char *dest)
 {
@@ -781,9 +799,10 @@ backup_database(const char *source, const char *dest)
 	fprintf(stderr, "Unable to backup the database.\n");
 }
 
-//Function does not check the existence of existing databases,
-//As we of course want to allow the first database to be imported one.
-//Function also sets tracking status for the imported database.
+/*Function does not check the existence of existing databases,
+ *As we of course want to allow the first database to be imported one.
+ *Function also sets tracking status for the imported database.
+ */
 void
 backup_import_database(const char *source, const char *dest)
 {
@@ -794,6 +813,7 @@ backup_import_database(const char *source, const char *dest)
     }
 }
 
+/*Print passphrase of an entry to stdout*/
 void
 show_passphrase_only(int id)
 {
@@ -808,7 +828,7 @@ show_passphrase_only(int id)
 	return;
     }
 	
-    //Skip the first one, it's initialization data.
+    /*Skip the first one, it's initialization data.*/
     Entry_t *next = entry->next;
 	
     if(next != NULL)
@@ -819,6 +839,7 @@ show_passphrase_only(int id)
     list_free(entry);	
 }
 
+/*Print username of an entry to stdout*/
 void
 show_username_only(int id)
 {
@@ -833,7 +854,7 @@ show_username_only(int id)
 	return;
     }
 	
-    //Skip the first one, it's initialization data.
+    /*Skip the first one, it's initialization data.*/
     Entry_t *next = entry->next;
 	
     if(next != NULL)
@@ -844,6 +865,7 @@ show_username_only(int id)
     list_free(entry);
 }
 
+/*Print url of an entry to stdout*/
 void
 show_url_only(int id)
 {
@@ -858,7 +880,7 @@ show_url_only(int id)
 	return;
     }
 	
-    //Skip the first one, it's initialization data.
+    /*Skip the first one, it's initialization data.*/
     Entry_t *next = entry->next;
 	
     if(next != NULL)
@@ -869,6 +891,7 @@ show_url_only(int id)
     list_free(entry);
 }
 
+/*Print notes of an entry to stdout*/
 void
 show_notes_only(int id)
 {
@@ -883,7 +906,7 @@ show_notes_only(int id)
 	return;
     }
 	
-    //Skip the first one, it's initialization data.
+    /*Skip the first one, it's initialization data.*/
     Entry_t *next = entry->next;
 	
     if(next != NULL)

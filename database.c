@@ -31,18 +31,20 @@
 #include "database.h"
 #include "crypto.h"
 
-//File implements basic interface for using database operations
-//needed by Steel. It's designed in a way that it should be easy
-//to use from a gui too.
+/*File implements basic interface for using database operations
+ *needed by Steel. It's designed in a way that it should be easy
+ *to use from a gui too.
+ */
 
-//Database callback prototypes
+/*Database callback prototypes*/
 static int cb_get_entries(void *list, int argc, char **argv, char **column_name);
 static int cb_get_next_id(void *id, int argc, char **argv, char **column_name);
 static int cb_get_by_id(void *list, int argc, char **argv, char **column_name);
 static int cb_check_integrity(void *notused, int argc, char **argv, char **column_name);
 
-//Returns true is file exists and false if not.
-//Function should be portable.
+/*Returns true is file exists and false if not.
+ *Function should be portable.
+ */
 bool
 db_file_exists(const char *path)
 {
@@ -55,10 +57,11 @@ db_file_exists(const char *path)
     return retval;
 }
 
-//Get Steel lockfile path.
-//Lock file is a simple file which has the currently opened
-//database path. Returns NULL on failure. Caller must free the return
-//value.
+/*Get Steel lockfile path.
+ *Lock file is a simple file which has the currently opened
+ *database path. Returns NULL on failure. Caller must free the return
+ *value.
+ */
 char *
 get_lockfile_path()
 {
@@ -76,7 +79,7 @@ get_lockfile_path()
 
     len = strlen(env);
 	
-    // +13 for /.steel_open filename
+    /*+13 for /.steel_open filename*/
     path = malloc((len + 13) * sizeof(char));
 	
     if(path == NULL)
@@ -91,7 +94,7 @@ get_lockfile_path()
     return path;
 }
 
-//Remove the lock file if found.
+/*Remove the lock file if found.*/
 void
 db_remove_lockfile()
 {
@@ -106,8 +109,9 @@ db_remove_lockfile()
     free(path);
 }
 
-//Creates the lock file and writes content to it.
-//Content should be the currently opened database path.
+/*Creates the lock file and writes content to it.
+ *Content should be the currently opened database path.
+ */
 static void
 create_lockfile(const char *content)
 {
@@ -133,9 +137,10 @@ create_lockfile(const char *content)
     free(path);
 }
 
-//Reads the currently opened database path from the
-//lock file. Returns NULL on failure, the path on success.
-//Caller must free the return value.
+/*Reads the currently opened database path from the
+ *lock file. Returns NULL on failure, the path on success.
+ *Caller must free the return value.
+ */
 char *
 read_path_from_lockfile()
 {
@@ -145,9 +150,10 @@ read_path_from_lockfile()
     char *line = NULL;
     size_t len = 256;
 	
-    //Preallocate data, even thought getline will allocate the space.
-    //However on some operating systems this is needed so we can safely
-    //free data.
+    /*Preallocate data, even thought getline will allocate the space.
+     *However on some operating systems this is needed so we can safely
+     *free data.
+     */
     data = malloc(len * sizeof(char));
 	
     if(data == NULL)
@@ -175,8 +181,9 @@ read_path_from_lockfile()
 
     line = data;
 	
-    //We only need to read the first line of the file,
-    //it contains the path to the currently open db file
+    /*We only need to read the first line of the file,
+     *it contains the path to the currently open db file
+     */
     getline(&line, &len, fp);
 	
     fclose(fp);
@@ -185,9 +192,10 @@ read_path_from_lockfile()
     return line;
 }
 
-//Run integrity check for the database to detect
-//malformed and corrupted databases. Returns true
-//if everything is ok, false if something is wrong.
+/*Run integrity check for the database to detect
+ *malformed and corrupted databases. Returns true
+ *if everything is ok, false if something is wrong.
+ */
 static bool
 db_check_integrity(const char *path)
 {
@@ -221,9 +229,10 @@ db_check_integrity(const char *path)
     return true;
 }
 
-//This function is used of to make basic checks before operating with there
-//database. Does the file exists? Is it encrypted? If the database is
-//available for writing or reading returns true, otherwise false.
+/*This function is used of to make basic checks before operating with there
+ *database. Does the file exists? Is it encrypted? If the database is
+ *available for writing or reading returns true, otherwise false.
+ */
 static bool
 db_make_sanity_check(char *path)
 {	
@@ -238,25 +247,27 @@ db_make_sanity_check(char *path)
     if(!db_file_exists(path))
     {
 	fprintf(stderr, "%s: does not exist\n", path);
-	//As the path does not exist anymore, just remove
-	//the lock file to allow user to create a new db.
-	//db_remove_lockfile();
+	/*As the path does not exist anymore, just remove
+	 *the lock file to allow user to create a new db.
+	 */
+	db_remove_lockfile();
 	free(path);
 	return false;
     }
 
     if(is_file_encrypted(path))
     {
-	//This should not happen, ever
-	//If we can get get the path from the lockfile and it's encrypted
-	//there's something wrong. Lock file should not even exists when
-	//database is encrypted.
+	/*This should not happen, ever
+	 *If we can get get the path from the lockfile and it's encrypted
+	 *there's something wrong. Lock file should not even exists when
+	 *database is encrypted.
+	 */
 	fprintf(stderr, "%s: is encrypted.\n", path);
 	free(path);
 	return false;
     }
 	
-    //Finally run integrity check
+    /*Finally run integrity check*/
     if(!db_check_integrity(path))
     {
 	fprintf(stderr, "Corrupted database %s.\n", path);
@@ -267,10 +278,11 @@ db_make_sanity_check(char *path)
     return true;
 }
 
-//Initializes new Steel database to the path given.
-//After creation, the database is encrypted with the passphrase.
-//Returns true on success, false on failure. Function does not override
-//existing database in the path.
+/*Initializes new Steel database to the path given.
+ *After creation, the database is encrypted with the passphrase.
+ *Returns true on success, false on failure. Function does not override
+ *existing database in the path.
+ */
 bool
 db_init(const char *path)
 {
@@ -317,9 +329,10 @@ db_init(const char *path)
     return true;
 }
 
-//Decrypt the encrypted database pointed by path.
-//Returns true on success, false on failure.
-//Path is also written to the lock file.
+/*Decrypt the encrypted database pointed by path.
+ *Returns true on success, false on failure.
+ *Path is also written to the lock file.
+ */
 bool
 db_open(const char *path, const char *passphrase)
 {
@@ -335,15 +348,17 @@ db_open(const char *path, const char *passphrase)
 	return false;
     }
 
-    //Write path as content to our lock file
-    //to determine what db file is open.
+    /*Write path as content to our lock file
+     *to determine what db file is open.
+     */
     create_lockfile(path);
 
     return true;
 }
 
-//Encrypt database file with passphrase and
-//remove lock file.
+/*Encrypt database file with passphrase and
+ *remove lock file.
+ */
 void
 db_close(const char *passphrase)
 {	
@@ -375,8 +390,9 @@ db_close(const char *passphrase)
     free(path);
 }
 
-//Add entry to the database.
-//Returns true on success, false on failure.
+/*Add entry to the database.
+ *Returns true on success, false on failure.
+ */
 bool
 db_add_entry(Entry_t *entry)
 {
@@ -425,9 +441,10 @@ db_add_entry(Entry_t *entry)
     return true;
 }
 
-//Returns a list of all the entries in the database.
-//First entry of the list contains initialization data,
-//which is in this case, the column names of the entries table.
+/*Returns a list of all the entries in the database.
+ *First entry of the list contains initialization data,
+ *which is in this case, the column names of the entries table.
+ */
 Entry_t *
 db_get_all_entries()
 {
@@ -452,8 +469,9 @@ db_get_all_entries()
 	return NULL;
     }
 	
-    //First item in our list will be the column names. This makes there
-    //formatting easier during the output.
+    /*First item in our list will be the column names. This makes
+     *formatting easier during the output.
+     */
     list = list_create("Title", "User", "Passphrase", "Address", "Id", -1, NULL);
 	
     sql = "select * from entries;";
@@ -473,9 +491,10 @@ db_get_all_entries()
     return list;
 }
 
-//Get next available auto increment value of there
-//entries table. Functions reads the last used auto increment id
-//and adds 1 to it.
+/*Get next available auto increment value of there
+ *entries table. Functions reads the last used auto increment id
+ *and adds 1 to it.
+ */
 int
 db_get_next_id()
 {
@@ -500,7 +519,7 @@ db_get_next_id()
 	return -1;
     }
 	
-    //This will get us the last available auto increment id
+    /*This will get us the last available auto increment id*/
     sql = "select * from sqlite_sequence where name='entries';";
 	
     rc = sqlite3_exec(db, sql, cb_get_next_id, &id, &error);
@@ -516,12 +535,13 @@ db_get_next_id()
     sqlite3_close(db);
     free(path);
 
-    //Plus one to get the next one, not the last one.
+    /*Plus one to get the next one, not the last one.*/
     return id + 1;
 }
 
-//Get entry which has the want id. The actual data can be read
-//from entry->next. The head only contains initialization data.
+/*Get entry which has the want id. The actual data can be read
+ *from entry->next. The head only contains initialization data.
+ */
 Entry_t *
 db_get_entry_by_id(int id)
 {
@@ -568,10 +588,11 @@ db_get_entry_by_id(int id)
     return list;
 }
 
-//Delete entry from the database by id. Returns true on success.
-//If true is returned but *success is set to false it means that
-//function was successful, but nothing was deleted (entry with wanted id
-//was not found)
+/*Delete entry from the database by id. Returns true on success.
+ *If true is returned but *success is set to false it means that
+ *function was successful, but nothing was deleted (entry with wanted id
+ *was not found)
+ */
 bool
 db_delete_entry_by_id(int id, bool *success)
 {
@@ -621,9 +642,10 @@ db_delete_entry_by_id(int id, bool *success)
     return true;	
 }
 
-//Updates an entry in the database.
-//Entry with given is is simply updated with 
-//new data from the parameter entry. Returns true on success.
+/*Updates an entry in the database.
+ *Entry with given is is simply updated with 
+ *new data from the parameter entry. Returns true on success.
+ */
 bool
 db_update_entry(int id, Entry_t *entry)
 {
@@ -669,8 +691,9 @@ db_update_entry(int id, Entry_t *entry)
     return true;
 }
 
-//Functions returns last modification time of a file pointed
-//by path. Function assumes that the file exists.
+/*Functions returns last modification time of a file pointed
+ *by path. Function assumes that the file exists.
+ */
 char *
 db_last_modified(const char *path)
 {
@@ -684,11 +707,12 @@ db_last_modified(const char *path)
     return date;
 }
 
-//Implement real secure delete. At the moment we just use shred command
-//for deletion as it's basically available every (at least on GNU/Linux).
-//Note that what shred does is much more secure than simply just deleting
-//the file normally. See man shred for more information.
-//Returns true on success, false on failure.
+/*Implement real secure delete. At the moment we just use shred command
+ *for deletion as it's basically available every (at least on GNU/Linux).
+ *Note that what shred does is much more secure than simply just deleting
+ *the file normally. See man shred for more information.
+ *Returns true on success, false on failure.
+ */
 bool
 db_shred(const char *path)
 {
@@ -721,13 +745,11 @@ db_shred(const char *path)
     return true;
 }
 
-//***********************************
-//Database actions callback functions
-//***********************************
+/*Database actions callback functions*/
 static int
 cb_get_entries(void *list, int argc, char **argv, char **column_name)
 {	
-    //Let's not allow NULLs
+    /*Let's not allow NULLs*/
     if(argv[0] == NULL)
 	return 1;
     if(argv[1] == NULL)
@@ -741,7 +763,7 @@ cb_get_entries(void *list, int argc, char **argv, char **column_name)
     if(argv[5] == NULL)
 	return 1;
 	
-    //Add data to the list
+    /*Add data to the list*/
     list_add(list, argv[0], argv[1], argv[2], argv[3], argv[4], atoi(argv[5]));
 
     return 0;	
@@ -754,7 +776,7 @@ cb_get_next_id(void *id, int argc, char **argv, char **column_name)
     {
 	if(strcmp(column_name[i], "seq") == 0)
 	{
-	    //Assing the value(int) of the column to our void pointer.
+	    /*Assing the value(int) of the column to our void pointer.*/
 	    (*(int*)id) = atoi(argv[i]);
 	}
     }
@@ -765,7 +787,7 @@ cb_get_next_id(void *id, int argc, char **argv, char **column_name)
 static int
 cb_get_by_id(void *list, int argc, char **argv, char **column_name)
 {
-    //Let's not allow NULLs
+    /*Let's not allow NULLs*/
     if(argv[0] == NULL)
 	return 1;
     if(argv[1] == NULL)
@@ -801,6 +823,4 @@ cb_check_integrity(void *notused, int argc, char **argv, char **column_name)
     return 0;
 }
 
-//********************************
-//End database callback functions
-//********************************
+/*End database callback functions*/

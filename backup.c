@@ -25,9 +25,10 @@
 #include "database.h"
 #include "status.h"
 
-//Function to copy a file from source to destination.
-//Assumes that source exists and destionation does not exist.
-//Returns true on success, false on failure.
+/*Function to copy a file from source to destination.
+ *Assumes that source exists and destionation does not exist.
+ *Returns true on success, false on failure.
+ */
 static bool
 copy_file(const char *source, const char *dest)
 {
@@ -61,11 +62,12 @@ copy_file(const char *source, const char *dest)
     return true;
 }
 
-//Take a backup of database file pointed by source and copy it
-//to the path pointed by dest. If source is not encrypted function
-//will abort and ask user to encrypt the file first. This is simply
-//to enforce security. It's not a good idea to backup open passphrase
-//databases. Returns true on success, false on failure.
+/*Take a backup of database file pointed by source and copy it
+ *to the path pointed by dest. If source is not encrypted function
+ *will abort and ask user to encrypt the file first. This is simply
+ *to enforce security. It's not a good idea to backup open passphrase
+ *databases. Returns true on success, false on failure.
+ */
 bool
 backup_export(const char *source, const char *dest)
 {
@@ -96,8 +98,9 @@ backup_export(const char *source, const char *dest)
     return true;
 }
 
-//Import backup database pointed by path. Function also adds
-//the database into the steel_dbs file Steel to track it's status.
+/*Import backup database pointed by path. Function also adds
+ *the database into the steel_dbs file Steel to track it's status.
+ */
 bool
 backup_import(const char *source, const char *dest)
 {

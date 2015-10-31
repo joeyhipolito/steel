@@ -37,14 +37,16 @@
 #include "crypto.h"
 #include "bcrypt.h"
 
-//Our magic number that's written into the
-//encrypted file. Used to determine if the file
-//is encrypted.
+/*Our magic number that's written into the
+ *encrypted file. Used to determine if the file
+ *is encrypted.
+ */
 static const int MAGIC_HEADER = 0x33497545;
 
-//Function appends ext to the orig string.
-//Returns new string on success, NULL on failure.
-//Caller must free the return value.
+/*Function appends ext to the orig string.
+ *Returns new string on success, NULL on failure.
+ *Caller must free the return value.
+ */
 static char *
 get_output_filename(const char *orig, const char *ext)
 {
@@ -67,10 +69,11 @@ get_output_filename(const char *orig, const char *ext)
     return path;
 }
 
-//Function generates random data from /dev/urandom
-//Parameter size is how much random data caller
-//wants to generate. Caller must free the return value.
-//Returns the data or NULL on failure.
+/*Function generates random data from /dev/urandom
+ *Parameter size is how much random data caller
+ *wants to generate. Caller must free the return value.
+ *Returns the data or NULL on failure.
+ */
 static char *
 generate_random_data(int size)
 {
@@ -100,9 +103,10 @@ generate_random_data(int size)
     return data;
 }
 
-//Function generates bcrypt hash from passphrase and writes it
-//to the current cursor location of fOut file pointer.
-//Return true on success, false on failure.
+/*Function generates bcrypt hash from passphrase and writes it
+ *to the current cursor location of fOut file pointer.
+ *Return true on success, false on failure.
+ */
 static bool
 write_bcrypt_hash(FILE *fOut, const char *passphrase)
 {
@@ -131,10 +135,11 @@ write_bcrypt_hash(FILE *fOut, const char *passphrase)
     return true;
 }
 
-//Generate new Key. Parameter bool* is set either true or false
-//depending if the function was successful or not.
-//Note that Key is always returned, but on failure there might not
-//be data and/or salt. Only use the key is success is true.
+/*Generate new Key. Parameter bool* is set either true or false
+ *depending if the function was successful or not.
+ *Note that Key is always returned, but on failure there might not
+ *be data and/or salt. Only use the key is success is true.
+ */
 static Key_t
 generate_key(const char *passphrase, bool *success)
 {
@@ -194,8 +199,9 @@ generate_key(const char *passphrase, bool *success)
     return key;
 }
 
-//Generates new key from existing salt. Otherwise function works similary as the
-//one above.
+/*Generates new key from existing salt. Otherwise function works similary as the
+ *one above.
+ */
 static Key_t
 generate_key_salt(const char *passphrase, char *salt, bool *success)
 {
@@ -245,8 +251,9 @@ generate_key_salt(const char *passphrase, char *salt, bool *success)
     return key;
 }
 
-//Generates random number between 0 and max.
-//Function should generate uniform distribution.
+/*Generates random number between 0 and max.
+ *Function should generate uniform distribution.
+ */
 static unsigned int
 rand_between(unsigned int min, unsigned int max)
 {
@@ -255,9 +262,10 @@ rand_between(unsigned int min, unsigned int max)
     const unsigned int buckets = RAND_MAX / range;
     const unsigned int limit = buckets * range;
 
-    //Create equal size buckets all in a row, then fire randomly towards
-    //the buckets until you land in one of them. All buckets are equally
-    //likely. If you land off the end of the line of buckets, try again.
+    /*Create equal size buckets all in a row, then fire randomly towards
+     *the buckets until you land in one of them. All buckets are equally
+     *likely. If you land off the end of the line of buckets, try again.
+     */
     do
     {
 	r = rand();
@@ -266,8 +274,9 @@ rand_between(unsigned int min, unsigned int max)
     return min + (r / buckets);
 }
 
-//Timing safe comparing of two hmac hashes. Return true if they match, 
-//false if not.
+/*Timing safe comparing of two hmac hashes. Return true if they match, 
+ *false if not.
+ */
 bool
 verify_hmac(const unsigned char *old, const unsigned char *new)
 {	
@@ -290,8 +299,9 @@ verify_hmac(const unsigned char *old, const unsigned char *new)
     return true;
 }
 
-//Generate keyed hash from data. Return the hash on success, NULL on
-//failure.
+/*Generate keyed hash from data. Return the hash on success, NULL on
+ *failure.
+ */
 unsigned char *
 get_data_hmac(const char *data, long datalen, Key_t key)
 {
@@ -313,13 +323,14 @@ get_data_hmac(const char *data, long datalen, Key_t key)
     return mac;
 }
 
-//Generate key hash from file content pointed by path.
-//and append the hash to the end of the file.
-//Returns true on success, false on failure. This function
-//is used to generate hash from content of encrypted file and append the hash
-//to the file.
-//Note that function reads the whole file into a memory, so it's not good idea
-//to use this function for huge files.
+/*Generate key hash from file content pointed by path.
+ *and append the hash to the end of the file.
+ *Returns true on success, false on failure. This function
+ *is used to generate hash from content of encrypted file and append the hash
+ *to the file.
+ *Note that function reads the whole file into a memory, so it's not good idea
+ *to use this function for huge files.
+ */
 bool
 hmac_file_content(const char *path, Key_t key)
 {
@@ -337,7 +348,7 @@ hmac_file_content(const char *path, Key_t key)
 	return false;
     }
 
-    //Calculate file size
+    /*Calculate file size*/
     fseek(fp, 0, SEEK_END);
     datalen = ftell(fp);
     fseek(fp, 0, SEEK_SET);
@@ -351,7 +362,7 @@ hmac_file_content(const char *path, Key_t key)
 	return false;
     }
 
-    //Read the whole file to a buffer.
+    /*Read the whole file to a buffer.*/
     fread(data, datalen, 1, fp);
     fclose(fp);
 
@@ -366,7 +377,7 @@ hmac_file_content(const char *path, Key_t key)
 	return false;
     }
 
-    //Append hmac to the end of the file
+    /*Append hmac to the end of the file*/
     fwrite(mac, 1, HMAC_SIZE, fOut);
     fclose(fOut);
 
@@ -376,9 +387,10 @@ hmac_file_content(const char *path, Key_t key)
     return true;
 }
 
-//Function reads our magic from the beginning of the file
-//and compares it to the original one. If they match,
-//file is encrypted with Steel. If this is the case, returns true.
+/*Function reads our magic from the beginning of the file
+ *and compares it to the original one. If they match,
+ *file is encrypted with Steel. If this is the case, returns true.
+ */
 bool
 is_file_encrypted(const char *path)
 {
@@ -393,7 +405,7 @@ is_file_encrypted(const char *path)
 	return false;
     }
 
-    //Skip hash, we don't need it here
+    /*Skip hash, we don't need it here*/
     fseek(fp, BCRYPT_HASHSIZE, SEEK_SET);
 
     fread((void *)&data, sizeof(MAGIC_HEADER), 1, fp);
@@ -405,8 +417,9 @@ is_file_encrypted(const char *path)
     return true;
 }
 
-//Verify bcrypt hash agaist passphrase. If the passphrase matches
-//returns true, otherwise false.
+/*Verify bcrypt hash agaist passphrase. If the passphrase matches
+ *returns true, otherwise false.
+ */
 bool
 verify_passphrase(const char *passphrase, const char *hash)
 {
@@ -420,8 +433,9 @@ verify_passphrase(const char *passphrase, const char *hash)
     return true;
 }
 
-//Encrypt file pointed by path using passphrase.
-//On successful encryption, return true, otherwise false.
+/*Encrypt file pointed by path using passphrase.
+ *On successful encryption, return true, otherwise false.
+ */
 bool
 encrypt_file(const char *path, const char *passphrase)
 {
@@ -467,7 +481,7 @@ encrypt_file(const char *path, const char *passphrase)
 	return false;
     }
 
-    //Initialize mcrypt
+    /*Initialize mcrypt*/
     ret = mcrypt_generic_init(td, key.data, KEY_SIZE, IV);
 
     if(ret < 0)
@@ -505,7 +519,7 @@ encrypt_file(const char *path, const char *passphrase)
 	return false;
     }
 
-    //Write hashed password to the beginning of the file
+    /*Write hashed password to the beginning of the file*/
     if(!write_bcrypt_hash(fOut, passphrase))
     {
 	fprintf(stderr, "Bcrypt failed\n");
@@ -518,13 +532,14 @@ encrypt_file(const char *path, const char *passphrase)
 	return false;
     }
 
-    //Write our magic header, iv and salt of the key to the file
+    /*Write our magic header, iv and salt of the key to the file*/
     fwrite((void *)&MAGIC_HEADER, sizeof(MAGIC_HEADER), 1, fOut);
     fwrite(IV, 1, IV_SIZE, fOut);
     fwrite(key.salt, 1, BCRYPT_HASHSIZE, fOut);
 
-    //Encrypt rest of the file content (the actual data,
-    //that needs to be protected)
+    /*Encrypt rest of the file content (the actual data,
+     *that needs to be protected)
+     */
     while(fread(&block, 1, 1, fIn) == 1)
     {
 	mcrypt_generic(td, &block, 1);
@@ -544,8 +559,9 @@ encrypt_file(const char *path, const char *passphrase)
 
     free(output_filename);
 
-    //Finally, append hmac of the encrypted data
-    //into the end of the file.
+    /*Finally, append hmac of the encrypted data
+     *into the end of the file.
+     */
     if(!hmac_file_content(path, key))
     {
 	fprintf(stderr, "Failed to write hmac\n");
@@ -555,8 +571,9 @@ encrypt_file(const char *path, const char *passphrase)
     return true;
 }
 
-//Decrypt file pointed by path, using passphrase.
-//On success return true, otherwise false
+/*Decrypt file pointed by path, using passphrase.
+ *On success return true, otherwise false
+ */
 bool
 decrypt_file(const char *path, const char *passphrase)
 {
@@ -592,6 +609,7 @@ decrypt_file(const char *path, const char *passphrase)
     if(salt == NULL)
     {
 	fprintf(stderr, "Malloc failed\n");
+	free(IV);
 	return false;
     }
 
@@ -605,15 +623,15 @@ decrypt_file(const char *path, const char *passphrase)
 	return false;
     }
 
-    //Calculate file size and rewind the cursor
+    /*Calculate file size and rewind the cursor*/
     fseek(fIn, 0, SEEK_END);
     filesize = ftell(fIn);
     fseek(fIn, 0, SEEK_SET);
 
-    //Read the whole file into a buffer(except hmac) and verify the hmac
+    /*Read the whole file into a buffer(except hmac) and verify the hmac*/
     long len_before_hmac = (filesize - HMAC_SIZE) + 1;
     char buffer[len_before_hmac];
-    unsigned char *mac = NULL; //mac[HMAC_SIZE];
+    unsigned char *mac = NULL;
 	
     mac = malloc(HMAC_SIZE * sizeof(char));
 	
@@ -630,15 +648,15 @@ decrypt_file(const char *path, const char *passphrase)
     fread(mac, HMAC_SIZE, 1, fIn);
     fseek(fIn, 0, SEEK_SET);
 	
-    //Read bcrypt hash, iv and salt from the beginning of the file
+    /*Read bcrypt hash, iv and salt from the beginning of the file*/
     fread(hash, BCRYPT_HASHSIZE, 1, fIn);
-    //Skip the magic header, file's already checked
+    /*Skip the magic header, file's already checked*/
     fseek(fIn, sizeof(int), SEEK_CUR);
 
     fread(IV, IV_SIZE, 1, fIn);
     fread(salt, BCRYPT_HASHSIZE, 1, fIn);
 
-    //Verify passphrase
+    /*Verify passphrase*/
     if(!verify_passphrase(passphrase, hash))
     {
 	fprintf(stderr, "Invalid passphrase\n");
@@ -649,10 +667,10 @@ decrypt_file(const char *path, const char *passphrase)
 	return false;
     }
 
-    //Generate new key using existing salt.
+    /*Generate new key using existing salt.*/
     key = generate_key_salt(passphrase, salt, &success);
 
-    //Verify hmac
+    /*Verify hmac*/
     unsigned char *new_mac = get_data_hmac(buffer, len_before_hmac - 1, key);
 
     if(!verify_hmac(mac, new_mac))
@@ -720,13 +738,13 @@ decrypt_file(const char *path, const char *passphrase)
 
     while(fread(&block, 1, 1, fIn) == 1)
     {
-	//Decrypt data until the hmac
+	/*Decrypt data until the hmac*/
 	if(ftell(fIn) == len_before_hmac)
 	    break;
 
 	if(mdecrypt_generic(td, &block, 1) != 0)
 	{
-	    //If decryption fails, abort and remove output file
+	    /*If decryption fails, abort and remove output file*/
 	    fprintf(stderr, "Decryption failed\n");
 	    remove(output_filename);
 	    decryption_failed = true;
@@ -745,7 +763,7 @@ decrypt_file(const char *path, const char *passphrase)
     fclose(fIn);
     fclose(fOut);
 
-    //Only remove original file if decryption was successful
+    /*Only remove original file if decryption was successful*/
     if(!decryption_failed)
     {
 	remove(path);
@@ -757,9 +775,10 @@ decrypt_file(const char *path, const char *passphrase)
     return true;
 }
 
-//Generate passphrase. Param count is there
-//length of the passphrase. Actually, at the moment
-//this function does not generate passphrases, but just passwords.
+/*Generate passphrase. Param count is there
+ *length of the passphrase. Actually, at the moment
+ *this function does not generate passphrases, but just passwords.
+ */
 char *
 generate_pass(int length)
 {
@@ -775,7 +794,7 @@ generate_pass(int length)
     struct timespec tspec;
 
 #ifdef __MACH__
-    //OS X does not have clock_gettime, use clock_get_time
+    /*OS X does not have clock_gettime, use clock_get_time*/
     clock_serv_t cclock;
     mach_timespec_t mts;
     host_get_clock_service(mach_host_self(), SYSTEM_CLOCK, &cclock);

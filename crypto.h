@@ -21,18 +21,19 @@
 #ifndef __CRYPTO_H
 #define __CRYPTO_H
 
-#define KEY_SIZE (32) //256 bits
-#define IV_SIZE (32) //256 bits
-#define HMAC_SIZE (32) //256 bits
+#define KEY_SIZE (32) /*256 bits*/
+#define IV_SIZE (32) /*256 bits*/
+#define HMAC_SIZE (32) /*256 bits*/
 #define BCRYPT_WORK_FACTOR (12)
 
 typedef struct Key
 {
-    //C99 does not support variable size
-    //arrays in the file scope
+    /*C99 does not support variable size
+     *arrays in the file scope
+     */
 	
-    char data[32]; //KEY_SIZE
-    char salt[64];  //BCRYPT_HASHSIZE
+    char data[32]; /*KEY_SIZE*/
+    char salt[64];  /*BCRYPT_HASHSIZE*/
 
 } Key_t;
 

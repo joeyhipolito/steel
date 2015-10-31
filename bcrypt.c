@@ -111,15 +111,13 @@ timing_safe_strcmp(const char *str1, const char *str2)
     return ret;
 }
 
-/*
- * This function expects a work factor between 4 and 31 and a char array to
+/* This function expects a work factor between 4 and 31 and a char array to
  * store the resulting generated salt. The char array should typically have
  * BCRYPT_HASHSIZE bytes at least. If the provided work factor is not in the
  * previous range, it will default to 12.
  *
  * The return value is zero if the salt could be correctly generated and
  * nonzero otherwise.
- *
  */
 int
 bcrypt_gensalt(int factor, char salt[BCRYPT_HASHSIZE])
@@ -145,7 +143,7 @@ bcrypt_gensalt(int factor, char salt[BCRYPT_HASHSIZE])
     if (try_close(fd) != 0)
 	return 3;
 
-    /* Generate salt. */
+    /*Generate salt.*/
     workf = (factor < 4 || factor > 31)?12:factor;
 	
     aux = crypt_gensalt_rn("$2a$", workf, input, RANDBYTES,
@@ -154,8 +152,8 @@ bcrypt_gensalt(int factor, char salt[BCRYPT_HASHSIZE])
     return (aux == NULL)?5:0;
 }
 
-/*
- * This function expects a password to be hashed, a salt to hash the password
+
+/* This function expects a password to be hashed, a salt to hash the password
  * with and a char array to leave the result. Both the salt and the hash
  * parameters should have room for BCRYPT_HASHSIZE characters at least.
  *
@@ -166,7 +164,6 @@ bcrypt_gensalt(int factor, char salt[BCRYPT_HASHSIZE])
  *
  * The return value is zero if the password could be hashed and nonzero
  * otherwise.
- *
  */
 int
 bcrypt_hashpw(const char *passwd, const char salt[BCRYPT_HASHSIZE],
@@ -178,14 +175,12 @@ bcrypt_hashpw(const char *passwd, const char salt[BCRYPT_HASHSIZE],
     return (aux == NULL)?1:0;
 }
 
-/*
- * This function expects a password and a hash to verify the password against.
+/* This function expects a password and a hash to verify the password against.
  * The internal implementation is tuned to avoid timing attacks.
  *
  * The return value will be -1 in case of errors, zero if the provided password
  * matches the given hash and greater than zero if no errors are found and the
  * passwords don't match.
- *
  */
 int
 bcrypt_checkpw(const char *passwd, const char hash[BCRYPT_HASHSIZE])

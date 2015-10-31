@@ -18,18 +18,18 @@
  *
  */
 
-//Needed for getline() 
+/*Needed for getline()*/
 #define _XOPEN_SOURCE 700
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
-//Steel uses .steel_dbs file to track existing databases in the system.
-//This system is really simple, database paths are added into .steel_dbs
-//file and removed from there. If file path is in the file, Steel "knows"
-//it, if not, Steel does not know anything about it. Really, it's that simple.
-
+/*Steel uses .steel_dbs file to track existing databases in the system.
+ *This system is really simple, database paths are added into .steel_dbs
+ *file and removed from there. If file path is in the file, Steel "knows"
+ *it, if not, Steel does not know anything about it. Really, it's that simple.
+ */
 static char *
 get_status_file_tmp_path()
 {
@@ -44,7 +44,7 @@ get_status_file_tmp_path()
 	return NULL;
     }
 
-    //+17 for /.steel_dbs.tmp
+    /*+17 for /.steel_dbs.tmp*/
     path = calloc(1, (strlen(env) + 17) * sizeof(char));
 
     if(path == NULL)
@@ -59,8 +59,9 @@ get_status_file_tmp_path()
     return path;
 }
 
-//Get the path of steel_dbs file or NULL on failure.
-//Caller must free the return value.
+/*Get the path of steel_dbs file or NULL on failure.
+ *Caller must free the return value.
+ */
 char *
 status_get_file_path()
 {
@@ -75,7 +76,7 @@ status_get_file_path()
 	return NULL;
     }
 
-    //+12 for /.steel_dbs
+    /*+12 for /.steel_dbs*/
     path = calloc(1, (strlen(env) + 12) * sizeof(char));
 
     if(path == NULL)
@@ -90,10 +91,11 @@ status_get_file_path()
     return path;
 }
 
-//Get count file lines by new line characters.
-//Returns -1 on error, -2 when file has no lines.
-//Caller must close the file pointer after it's no longer
-//needed.
+/*Get count file lines by new line characters.
+ *Returns -1 on error, -2 when file has no lines.
+ *Caller must close the file pointer after it's no longer
+ *needed.
+ */
 int
 status_count_file_lines(FILE *fp)
 {
@@ -111,24 +113,23 @@ status_count_file_lines(FILE *fp)
 	    count++;
     }
 
-    //Return the count, ignoring the last empty line
+    /*Return the count, ignoring the last empty line*/
     if (count == 0)
 	return -2;
     else
 	return count - 1;
 }
 
-//Return one line from the file.
-//NULL is returned on failure. Caller must close the file pointer
-//when it's no longer needed.
+/*Return one line from the file.
+ *NULL is returned on failure. Caller must close the file pointer
+ *when it's no longer needed.
+ */
 char *
 status_read_file_line(FILE *fp)
 {
     if(fp == NULL)
 	return NULL;
 
-    //static char line[256] = {0};
-    //char *lineptr = line;
     char *lineptr = NULL;
     size_t len = 256;
     ssize_t read;
@@ -149,7 +150,7 @@ status_read_file_line(FILE *fp)
 	return NULL;
     }
 
-    //We don't want the trailing new line
+    /*We don't want the trailing new line*/
     retval = strtok(lineptr, "\n");
 
     returnline = calloc(1, (strlen(retval) + 1) * sizeof(char));
@@ -160,10 +161,11 @@ status_read_file_line(FILE *fp)
     return returnline;
 }
 
-//Returns FILE pointer, file opened in mode
-//defined by param mode. Returns NULL on failure.
-//Called must close the FILE pointer after it no longer
-//needed.
+/*Returns FILE pointer, file opened in mode
+ *defined by param mode. Returns NULL on failure.
+ *Called must close the FILE pointer after it no longer
+ *needed.
+ */
 FILE *
 status_get_file_ptr(char *mode)
 {
@@ -189,7 +191,7 @@ status_get_file_ptr(char *mode)
     return fp;
 }
 
-//Set database path to be "tracked".
+/*Set database path to be "tracked".*/
 void
 status_set_tracking(const char *path)
 {
@@ -205,9 +207,10 @@ status_set_tracking(const char *path)
     fclose(fp);
 }
 
-//Deletes given path from the status file, if found.
-//Returns -1 on error or line number where the line
-//was removed.
+/*Deletes given path from the status file, if found.
+ *Returns -1 on error or line number where the line
+ *was removed.
+ */
 int
 status_del_tracking(const char *path)
 {
@@ -232,7 +235,7 @@ status_del_tracking(const char *path)
 	return -1;
     }
 
-    //Move the file pointer back to the beginning of the file.
+    /*Move the file pointer back to the beginning of the file.*/
     rewind(fp);
 
     tmppath = get_status_file_tmp_path();
@@ -244,8 +247,14 @@ status_del_tracking(const char *path)
     }
 	
     tmp = fopen(tmppath, "w+");
+
+    if(tmp == NULL)
+    {
+	close(fp);
+	return -1;
+    }
 	
-    //Read each line to lines.
+    /*Read each line to lines.*/
     while(count >= 0)
     {
 
@@ -255,11 +264,12 @@ status_del_tracking(const char *path)
 	{
 	    fprintf(stderr, "Error reading line.\n");
 	    fclose(fp);
+	    fclose(tmp);
 	    free(tmppath);
 	    return -1;
 	}
 
-	//Skip line that matches the one we want to remove.
+	/*Skip line that matches the one we want to remove.*/
 	if(strcmp(line, path) != 0)
 	    fprintf(tmp, "%s\n", line);
 	else
@@ -276,7 +286,9 @@ status_del_tracking(const char *path)
 
     char *p = status_get_file_path();
 
-    //Simply rename our .steel_dbs temp file to the original one, after it's removed.
+    /*Simply rename our .steel_dbs temp file to the 
+     *original one, after it's removed.
+     */
     remove(p);
     rename(tmppath, p);
 
