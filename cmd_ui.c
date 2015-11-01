@@ -268,8 +268,6 @@ add_new_entry(char *title, char *user, char *url, char *note)
     size_t pwdlen = 255;
     char pass[pwdlen];
     char *ptr = pass;
-    char pass2[pwdlen];
-    char *ptr2 = pass2;
 	
     id = db_get_next_id();
 	
@@ -280,13 +278,6 @@ add_new_entry(char *title, char *user, char *url, char *note)
     }
 	
     my_getpass(ENTRY_PWD_PROMPT, &ptr, &pwdlen, stdin);
-    my_getpass(ENTRY_PWD_PROMPT_RETRY, &ptr2, &pwdlen, stdin);
-	
-    if(strcmp(pass, pass2) != 0)
-    {
-	fprintf(stderr, "Passphrases do not match.\n");
-	return;
-    }
 		
     Entry_t *entry = list_create(title, user, pass, url, note, id, NULL);
 
@@ -313,8 +304,6 @@ add_new_entry_interactive()
     size_t pwdlen = 255;
     char pass[pwdlen];
     char *ptr = pass;
-    char pass2[pwdlen];
-    char *ptr2 = pass2;
     int id;
 	
     id = db_get_next_id();
@@ -335,13 +324,6 @@ add_new_entry_interactive()
     fgets(notes, 255, stdin);
 	
     my_getpass(ENTRY_PWD_PROMPT, &ptr, &pwdlen, stdin);
-    my_getpass(ENTRY_PWD_PROMPT_RETRY, &ptr2, &pwdlen, stdin);
-	
-    if(strcmp(pass, pass2) != 0)
-    {
-	fprintf(stderr, "Passphrases do not match.\n");
-	return;
-    }
 	
     strip_newline_str(title);
     strip_newline_str(user);
@@ -604,22 +586,12 @@ replace_part(int id, const char *what, const char *new_data)
     size_t pwdlen = 255;
     char pass[pwdlen];
     char *ptr = pass;
-    char pass2[pwdlen];
-    char *ptr2 = pass2;
 	
     if(strcmp(what, "passphrase") == 0)
     {
 	/*Ok, user want's to replace passphrase.
-	 *Ask it, and verify it.
 	 */
 	my_getpass(ENTRY_PWD_PROMPT, &ptr, &pwdlen, stdin);
-	my_getpass(ENTRY_PWD_PROMPT_RETRY, &ptr2, &pwdlen, stdin);
-	
-	if(strcmp(pass, pass2) != 0)
-	{
-	    fprintf(stderr, "Passphrases do not match.\n");
-	    return;
-	}
     }
 	
     if(strcmp(what, "title") == 0)

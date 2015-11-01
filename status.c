@@ -250,7 +250,7 @@ status_del_tracking(const char *path)
 
     if(tmp == NULL)
     {
-	close(fp);
+	fclose(fp);
 	return -1;
     }
 	
