@@ -57,7 +57,7 @@ OPTIONS\n\
 -s, --show              <id>                          Show entry by id\n\
 -g, --gen-pass          <length> [count]              Generate secure password\n\
 -d, --delete            <id>                          Delete an entry by id\n\
--r, --replace           <id> <what> [content]         Replace an entry data\n\
+-e, --edit              <id> <what> [content]         Replace an entry data\n\
 						      <what> can be either \"user\",\n\
 						      \"title\", \"url\", \"notes\" or\n\
 					              \"passphrase\".\n\
@@ -117,7 +117,7 @@ main(int argc, char *argv[])
 	    {"gen-pass",         required_argument, 0, 'g'},
 	    {"add",              required_argument, 0, 'a'},
 	    {"delete",           required_argument, 0, 'd'},
-	    {"replace",          required_argument, 0, 'r'},
+	    {"edit",             required_argument, 0, 'e'},
 	    {"shred-db",         required_argument, 0, 'R'},
 	    {"find",             required_argument, 0, 'f'},
 	    {"list-all",         no_argument,       0, 'l'},
@@ -133,7 +133,7 @@ main(int argc, char *argv[])
 
 	int option_index = 0;
 
-	option = getopt_long(argc, argv, "Pi:b:B:o:cs:g:a:d:r:f:lR:SVp:u:U:n:h",
+	option = getopt_long(argc, argv, "Pi:b:B:o:cs:g:a:d:e:f:lR:SVp:u:U:n:h",
 			     long_options, &option_index);
 
 	if(option == -1)
@@ -222,7 +222,7 @@ main(int argc, char *argv[])
 	case 'd':
 	    delete_entry(atoi(optarg));
 	    break;
-	case 'r':
+	case 'e':
 	{
 	    if(!argv[optind])
 	    {
