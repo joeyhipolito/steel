@@ -199,7 +199,7 @@ open_database(const char *path)
 	return false;
 	
     /*Max passphrase length. Should be enough, really.*/
-    size_t pwdlen = 255;
+    size_t pwdlen = 1024;
     char passphrase[pwdlen];
     char *ptr = passphrase;
 	
@@ -227,7 +227,7 @@ close_database()
     if(!steel_tracker_file_exists())
 	return;
 	
-    size_t pwdlen = 255;
+    size_t pwdlen = 1024;
     char passphrase[pwdlen];
     char *ptr = passphrase;
     char pass2[pwdlen];
@@ -265,7 +265,7 @@ add_new_entry(char *title, char *user, char *url, char *note)
 	
     int id;
     /*Should be enough...*/
-    size_t pwdlen = 255;
+    size_t pwdlen = 1024;
     char pass[pwdlen];
     char *ptr = pass;
 	
@@ -297,11 +297,11 @@ add_new_entry_interactive()
     if(!steel_tracker_file_exists())
 	return;
 	
-    char title[255] = {0};
-    char user[255] = {0};
-    char url[255] = {0};
-    char notes[255] = {0};
-    size_t pwdlen = 255;
+    char title[1024] = {0};
+    char user[1024] = {0};
+    char url[1024] = {0};
+    char notes[1024] = {0};
+    size_t pwdlen = 1024;
     char pass[pwdlen];
     char *ptr = pass;
     int id;
@@ -315,13 +315,13 @@ add_new_entry_interactive()
     }
 	
     fprintf(stdout, "Title: ");
-    fgets(title, 255, stdin);
+    fgets(title, 1024, stdin);
     fprintf(stdout, "Username: ");
-    fgets(user, 255, stdin);
+    fgets(user, 1024, stdin);
     fprintf(stdout, "Address: ");
-    fgets(url, 255, stdin);
+    fgets(url, 1024, stdin);
     fprintf(stdout, "Notes: ");
-    fgets(notes, 255, stdin);
+    fgets(notes, 1024, stdin);
 	
     my_getpass(ENTRY_PWD_PROMPT, &ptr, &pwdlen, stdin);
 	
@@ -580,10 +580,12 @@ replace_part(int id, const char *what, const char *new_data)
     if(head == NULL)
     {
 	fprintf(stderr, "No entry found with id %d.\n", id);
+	list_free(entry);
+	
 	return;
     }
 	
-    size_t pwdlen = 255;
+    size_t pwdlen = 1024;
     char pass[pwdlen];
     char *ptr = pass;
 	
@@ -622,6 +624,81 @@ replace_part(int id, const char *what, const char *new_data)
 	
     db_update_entry(id, head);
 	
+    list_free(entry);
+}
+
+/*Replace an entry data interactively
+ *Interactive replace does not support replacing
+ *password at all. Users should use steel -e <id> passphrase
+ *instead.
+ */
+void
+replace_interactively(int id)
+{
+    if(!steel_tracker_file_exists())
+	return;
+
+    Entry_t *entry = NULL;
+    Entry_t *head = NULL;
+    char title[1024] = {0};
+    char user[1024] = {0};
+    char url[1024] = {0};
+    char notes[1024] = {0};
+    size_t pwdlen = 1024;
+    char pass[pwdlen];
+    char *ptr = pass;
+    
+    entry = db_get_entry_by_id(id);
+
+    if(entry == NULL)
+    {
+	fprintf(stderr, "Cannot process entry %d.\n", id);
+	return;
+    }
+    
+    /*Skip initialization data*/
+    head = entry->next;
+
+    if(head == NULL)
+    {
+	fprintf(stderr, "No entry found with id %d.\n", id);
+	list_free(entry);
+	
+	return;
+    }
+
+    fprintf(stdout, "Current title %s\n", head->title);
+    fprintf(stdout, "New title: ");
+    fgets(title, 1024, stdin);
+    fprintf(stdout, "Current username %s\n", head->user);
+    fprintf(stdout, "New username: ");
+    fgets(user, 1024, stdin);
+    fprintf(stdout, "Current address %s\n", head->url);
+    fprintf(stdout, "Address: ");
+    fgets(url, 1024, stdin);
+    fprintf(stdout, "Current note %s\n", head->notes);
+    fprintf(stdout, "New note: ");
+    fgets(notes, 1024, stdin);
+    fprintf(stdout, "Current passphrase %s\n", head->pwd);
+    my_getpass(ENTRY_PWD_PROMPT, &ptr, &pwdlen, stdin);
+
+    strip_newline_str(title);
+    strip_newline_str(user);
+    strip_newline_str(url);
+    strip_newline_str(notes);
+    
+    if(title[0] != '\0')
+	head->title = strdup(title);
+    if(user[0] != '\0')
+	head->user = strdup(user);
+    if(url[0] != '\0')
+	head->url = strdup(url);
+    if(notes[0] != '\0')
+	head->notes = strdup(notes);
+    if(pass[0] != '\0')
+	head->pwd = strdup(pass);
+    
+    db_update_entry(id, head);
     list_free(entry);
 }
 

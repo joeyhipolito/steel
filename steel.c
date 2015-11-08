@@ -57,10 +57,11 @@ OPTIONS\n\
 -s, --show              <id>                          Show entry by id\n\
 -g, --gen-pass          <length> [count]              Generate secure password\n\
 -d, --delete            <id>                          Delete an entry by id\n\
--e, --edit              <id> <what> [content]         Replace an entry data\n\
+-e, --edit              <id> <what> [content]         Edit an entry data\n\
 						      <what> can be either \"user\",\n\
 						      \"title\", \"url\", \"notes\" or\n\
 					              \"passphrase\".\n\
+-e, --edit              -I <id>                       Edit an entry data interactively\n\
 -R, --shred-db          <path>                        Shred database\n\
 -f, --find              <search>                      Search database\n\
 -l, --list-all                                        Show all entries\n\
@@ -224,30 +225,44 @@ main(int argc, char *argv[])
 	    break;
 	case 'e':
 	{
-	    if(!argv[optind])
+	    /*Edit interactively*/
+	    if(strcmp(optarg, "-I") == 0)
 	    {
-		fprintf(stderr, "Missing option, see -h for help\n");
-		return 0;
-	    }
-
-	    /*Replacing passphrase does not need third argument
-	     *It will be asked separately by replace_part()
-	     */
-	    if(strcmp(argv[optind], "passphrase") != 0)
-	    {
-		if(!argv[optind + 1])
+		if(!argv[optind])
 		{
 		    fprintf(stderr, "Missing option, see -h for help\n");
 		    return 0;
 		}
+
+		int id = atoi(argv[optind]);
+		replace_interactively(id);
 	    }
+	    else
+	    {
+		if(!argv[optind])
+		{
+		    fprintf(stderr, "Missing option, see -h for help\n");
+		    return 0;
+		}
 
-	    int id = atoi(optarg);
-	    char *what = argv[optind];
-	    char *content = argv[optind + 1];
+		/*Replacing passphrase does not need third argument
+		 *It will be asked separately by replace_part()
+		 */
+		if(strcmp(argv[optind], "passphrase") != 0)
+		{
+		    if(!argv[optind + 1])
+		    {
+			fprintf(stderr, "Missing option, see -h for help\n");
+			return 0;
+		    }
+		}
+
+		int id = atoi(optarg);
+		char *what = argv[optind];
+		char *content = argv[optind + 1];
 	    
-	    replace_part(id, what, content);
-
+		replace_part(id, what, content);
+	    }
 	    break;
 	}
 	case 'f':
