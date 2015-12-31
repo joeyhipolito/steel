@@ -5,3 +5,6 @@ steel
 *.3
 .#*
 *.png
+bin/
+*.exe
+*.dll
