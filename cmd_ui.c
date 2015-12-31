@@ -32,6 +32,8 @@
 #include "status.h"
 #include "backup.h"
 
+extern int fileno(FILE *stream);
+
 /*cmd_ui.c implements simple interface for command line version
  *of Steel. All functions in here are only called from main()
  */
