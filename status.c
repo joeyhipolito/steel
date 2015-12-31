@@ -38,13 +38,17 @@ get_status_file_tmp_path()
 	
     env = getenv("HOME");
 
+#if defined(__CYGWIN__) && !defined(_WIN32)
+    env = getenv("USERPROFILE");
+#endif
+    
     if(env == NULL)
     {
 	fprintf(stderr, "Failed to get env.\n");
 	return NULL;
     }
 
-    /*+17 for /.steel_dbs.tmp*/
+    /*+17 for /.steel_dbs.tmp or for /_steel_dbs.tmp */
     path = calloc(1, (strlen(env) + 17) * sizeof(char));
 
     if(path == NULL)
@@ -54,7 +58,12 @@ get_status_file_tmp_path()
     }
 
     strcpy(path, env);
-    strcat(path, "/.steel_dbs.tmp");
+
+#if defined(__CYGWIN__) && !defined(_WIN32)
+    strcat(path, "/_steel_dbs");
+#else
+    strcat(path, "/.steel_dbs");
+#endif
 
     return path;
 }
@@ -69,14 +78,18 @@ status_get_file_path()
     char *env = NULL;
 	
     env = getenv("HOME");
-
+    
+#if defined(__CYGWIN__) && !defined(_WIN32)
+    env = getenv("USERPROFILE");
+#endif
+    
     if(env == NULL)
     {
 	fprintf(stderr, "Failed to get env.\n");
 	return NULL;
     }
 
-    /*+12 for /.steel_dbs*/
+    /*+12 for /.steel_dbs or for /_steel_dbs*/
     path = calloc(1, (strlen(env) + 12) * sizeof(char));
 
     if(path == NULL)
@@ -86,8 +99,13 @@ status_get_file_path()
     }
 
     strcpy(path, env);
-    strcat(path, "/.steel_dbs");
 
+#if defined(__CYGWIN__) && !defined(_WIN32)
+    strcat(path, "/_steel_dbs");
+#else
+    strcat(path, "/.steel_dbs");
+#endif
+	 
     return path;
 }
 

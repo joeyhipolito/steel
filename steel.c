@@ -29,7 +29,7 @@
 
 static void
 version_print()
-{
+{  
     char *str = "This is free software; see the source for copying conditions.\n" \
 	"There is no warranty; not even for MERCHANTABILITY or FITNESS\n" \
 	"FOR A PARTICULAR PURPOSE.\n";

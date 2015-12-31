@@ -71,6 +71,10 @@ get_lockfile_path()
 	
     env = getenv("HOME");
 
+#if defined(__CYGWIN__) && !defined(_WIN32)
+    env = getenv("USERPROFILE");
+#endif
+    
     if(env == NULL)
     {
 	fprintf(stderr, "Failed to get home path\n");
@@ -79,7 +83,7 @@ get_lockfile_path()
 
     len = strlen(env);
 	
-    /*+13 for /.steel_open filename*/
+    /*+13 for /.steel_open or for /_steel_open filename*/
     path = malloc((len + 13) * sizeof(char));
 	
     if(path == NULL)
@@ -89,7 +93,12 @@ get_lockfile_path()
     }
 
     strcpy(path, env);
+
+#if defined(__CYGWIN__) && !defined(_WIN32)
+    strcat(path, "/_steel_open");
+#else
     strcat(path, "/.steel_open");
+#endif
 
     return path;
 }
