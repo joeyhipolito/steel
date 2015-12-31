@@ -86,10 +86,10 @@ my_strcasestr(const char *str, const char *str2)
     }
 
     for (int i = 0; i < strlen(tmp1); i++)
-	tmp1[i] = tolower(tmp1[i]);
+      tmp1[i] = tolower((unsigned char)tmp1[i]);
 
     for (int i = 0; i < strlen(tmp2); i++)
-	tmp2[i] = tolower(tmp2[i]);
+      tmp2[i] = tolower((unsigned char)tmp2[i]);
 
     tmp3 = strstr(tmp1, tmp2);
 
