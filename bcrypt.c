@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Niko Rosvall <niko@byteptr.com>
+ * Copyright (C) 2016 Niko Rosvall <niko@byteptr.com>
  * Originally written by Ricardo Garcia under CC0 Public Domain Dedication.
  *
  * This file is part of Steel.

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Niko Rosvall <niko@byteptr.com>
+ * Copyright (C) 2016 Niko Rosvall <niko@byteptr.com>
  *
  * This file is part of Steel.
  *
@@ -25,7 +25,7 @@
 #include <getopt.h>
 #include "cmd_ui.h"
 
-#define VERSION 1.1
+#define VERSION 1.2
 
 static void
 version_print()
@@ -82,7 +82,7 @@ FLAGS\n\
 For more information and examples see man steel(1).\n\
 \n\
 AUTHORS\n\
-Copyright (C) 2015 Niko Rosvall <niko@byteptr.com>\n\
+Copyright (C) 2016 Niko Rosvall <niko@byteptr.com>\n\
 \n\
 Released under license GPL-3+. For more information, see\n\
 http://www.gnu.org/licenses\n\
