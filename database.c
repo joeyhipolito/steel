@@ -720,12 +720,29 @@ db_last_modified(const char *path)
  *for deletion as it's basically available every (at least on GNU/Linux).
  *Note that what shred does is much more secure than simply just deleting
  *the file normally. See man shred for more information.
+ *
+ *When running on Windows (using cygwin dlls), we just simply do normal
+ *file delete from C. Because you cannot use system() without /bin/sh with
+ *cygwin and because shred does not exist on Windows.
+ *
  *Returns true on success, false on failure.
  */
 bool
 db_shred(const char *path)
 {
+#if defined(__CYGWIN__) && !defined(_WIN32)
+
+    int ret = 0;
+
+    ret = remove(path);
+
+    if(ret != 0)
+	return false;
+    
+    return true;
+#else
     char *command = "shred -f -z -u ";
+    
     char *run = NULL;
     int ret = -1;
 
@@ -739,7 +756,7 @@ db_shred(const char *path)
 
     strcpy(run, command);
     strcat(run, path);
-	
+    
     ret = system(run);
 
     if(ret != 0)
@@ -752,6 +769,8 @@ db_shred(const char *path)
     free(run);
 	
     return true;
+#endif
+    
 }
 
 /*Database actions callback functions*/

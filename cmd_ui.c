@@ -803,6 +803,10 @@ show_database_statuses()
  *If the database is decrypted (currently the open one)
  *function will also remove .steel_open file.
  *Method will also remove entry from steel_dbs tracker file.
+ *
+ *On Windows uses simply remove() as shred does not exist.
+ *Also on Windows manipulated files are _steel_open and _steel_dbs
+ *and not the unix ones starting with a dot.
  */
 void
 remove_database(const char *path)

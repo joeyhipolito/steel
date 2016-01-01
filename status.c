@@ -60,9 +60,9 @@ get_status_file_tmp_path()
     strcpy(path, env);
 
 #if defined(__CYGWIN__) && !defined(_WIN32)
-    strcat(path, "/_steel_dbs");
+    strcat(path, "/_steel_dbs.tmp");
 #else
-    strcat(path, "/.steel_dbs");
+    strcat(path, "/.steel_dbs.tmp");
 #endif
 
     return path;
@@ -275,7 +275,6 @@ status_del_tracking(const char *path)
     /*Read each line to lines.*/
     while(count >= 0)
     {
-
 	line = status_read_file_line(fp);
 
 	if(line == NULL)
