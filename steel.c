@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <unistd.h>
 #include <getopt.h>
 #include "cmd_ui.h"
 
@@ -77,7 +78,7 @@ OPTIONS\n\
 \n\
 FLAGS\n\
 \n\
---with-passphrases                                    Show passphrases in listings\n\
+-w, --with-passphrases                                Show passphrases in listings\n\
 \n\
 For more information and examples see man steel(1).\n\
 \n\
@@ -101,6 +102,14 @@ main(int argc, char *argv[])
     {
 	usage();
 	return 0;
+    }
+
+    opterr = 0;
+
+    for(char **arg = argv; *arg; ++arg)
+    {
+	if(strcmp(*arg, "-w") == 0)
+	    list_passphrases = 1;
     }
 
     while(true)
