@@ -1,3 +1,18 @@
+1.2: 2016-01-10
+
+     Version 1.2 released.
+
+     This is a minor usability and bug fix release. 
+
+     *--replace is now renamed to -e, --edit
+     *Interactive editing is now supported using --edit -I <id>
+     *Better support for running on Cygwin environment
+     *When adding new entries, passphrase is now asked only once
+     *Fixes small compile warnings with recent GCC versions
+     *Build process is now simpler and easier to maintain
+     *Coding style is now completely different and 4 spaces is used instead of 8
+     *Passphrase listing can be now enable with a shortcut flag -w
+
 1.1: 2015-10-26
 
      Version 1.1 released.

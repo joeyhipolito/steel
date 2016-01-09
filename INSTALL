@@ -2,7 +2,7 @@ At the moment there's no binary packages available for Steel, so you will need
 to compile Steel from the source code. It's easy and fast. Steel depends on SQLite, 
 Mhash and Libmcrypt. Of course also GCC and GNU Make are required.
 
-To install the dependencies on Ubuntu 14.04:
+To install the dependencies on Mint 17.3 or Ubuntu 14.04:
 
       sudo apt-get install libmhash-dev libmcrypt-dev libsqlite3-dev
     
