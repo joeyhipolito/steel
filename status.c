@@ -37,10 +37,6 @@ get_status_file_tmp_path()
     char *env = NULL;
 	
     env = getenv("HOME");
-
-#if defined(__CYGWIN__) && !defined(_WIN32)
-    env = getenv("USERPROFILE");
-#endif
     
     if(env == NULL)
     {
@@ -59,11 +55,7 @@ get_status_file_tmp_path()
 
     strcpy(path, env);
 
-#if defined(__CYGWIN__) && !defined(_WIN32)
-    strcat(path, "/_steel_dbs.tmp");
-#else
     strcat(path, "/.steel_dbs.tmp");
-#endif
 
     return path;
 }
@@ -78,10 +70,6 @@ status_get_file_path()
     char *env = NULL;
 	
     env = getenv("HOME");
-    
-#if defined(__CYGWIN__) && !defined(_WIN32)
-    env = getenv("USERPROFILE");
-#endif
     
     if(env == NULL)
     {
@@ -100,11 +88,7 @@ status_get_file_path()
 
     strcpy(path, env);
 
-#if defined(__CYGWIN__) && !defined(_WIN32)
-    strcat(path, "/_steel_dbs");
-#else
     strcat(path, "/.steel_dbs");
-#endif
 	 
     return path;
 }

@@ -70,10 +70,6 @@ get_lockfile_path()
     size_t len = 0;
 	
     env = getenv("HOME");
-
-#if defined(__CYGWIN__) && !defined(_WIN32)
-    env = getenv("USERPROFILE");
-#endif
     
     if(env == NULL)
     {
@@ -93,12 +89,7 @@ get_lockfile_path()
     }
 
     strcpy(path, env);
-
-#if defined(__CYGWIN__) && !defined(_WIN32)
-    strcat(path, "/_steel_open");
-#else
     strcat(path, "/.steel_open");
-#endif
 
     return path;
 }
@@ -721,16 +712,16 @@ db_last_modified(const char *path)
  *Note that what shred does is much more secure than simply just deleting
  *the file normally. See man shred for more information.
  *
- *When running on Windows (using cygwin dlls), we just simply do normal
+ *When running on Cygwin, we just simply do normal
  *file delete from C. Because you cannot use system() without /bin/sh with
- *cygwin and because shred does not exist on Windows.
+ *cygwin and because shred does not exist on Cygwin.
  *
  *Returns true on success, false on failure.
  */
 bool
 db_shred(const char *path)
 {
-#if defined(__CYGWIN__) && !defined(_WIN32)
+#if defined(__CYGWIN__)
 
     int ret = 0;
 
