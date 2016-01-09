@@ -1,7 +1,7 @@
 .\" Manpage for steel.
 .\" Any errors or typos, contact niko@byteptr.com.
 
-.TH man 1 "26 Oct 2015" "1.1" "steel man page"
+.TH man 1 "9 Jan 2016" "1.2" "steel man page"
 .SH NAME
 steel \- command line password manager
 .SH SYNOPSIS
@@ -28,8 +28,11 @@ Delete an entry by id
 Edit an entry data. <what> can be either
 "user", "title", "url", "notes" or "passphrase".
 For "passphrase" content is not needed.
+.IP "-e, --edit -I <id>"
+Edit an entry interactively.
 .IP "-R, --shred-db <path>"
-Shred database
+Shred database. On Cygwin, normal file remove operation
+is used.
 .IP "-f, --find <search>"
 Search database
 .IP "-l, --list-all"
@@ -81,6 +84,8 @@ Display on passphrase of an existing entry:
 Remove database permanently:
        steel --shred-db "/path/to/existing/file.db"
 It's not possible to recover shredded database, use with caution.
+On Cygwin shredding is not used, but normal file delete operation
+is used instead.
 .PP
 Copy passphrase to X-Window system clipboard:
        steel --show-passphrase 4 | xclip -selection clipboard
@@ -105,7 +110,7 @@ effective on SSD disks. File will be removed, but not securely.
 .SH AUTHORS
 Written by Niko Rosvall.
 .SH COPYRIGHT
-Copyright (C) 2015 Niko Rosvall <niko@byteptr.com>
+Copyright (C) 2016 Niko Rosvall <niko@byteptr.com>
 .PP
 Released under license GPL-3+. For more information, see
 http://www.gnu.org/licenses.
