@@ -26,11 +26,11 @@
 #include <stdbool.h>
 #include <string.h>
 #include <termios.h>
-#include "database.h"
-#include "crypto.h"
-#include "cmd_ui.h"
-#include "status.h"
-#include "backup.h"
+#include "../libsteel/database.h"
+#include "../libsteel/crypto.h"
+#include "../libsteel/cmd_ui.h"
+#include "../libsteel/status.h"
+#include "../libsteel/backup.h"
 
 extern int fileno(FILE *stream);
 
