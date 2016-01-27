@@ -5,6 +5,8 @@ the shell. With Steel your passwords are safe. Steel uses RIJNDAEL encryption in
 mode with 256 bit keys. Steel is simple, Steel is advanced, Steel is adaptable.
 Steel is the new prophet of password management.
 
+Steel uses libsteel library (https://gitlab.com/Rosvall/libsteel)
+
 Steel is Free Software under the GPLv3+ license.
 
 Steel is developed and tested on GNU/Linux but it probably runs on other Unix
