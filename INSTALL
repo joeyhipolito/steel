@@ -4,6 +4,8 @@ to compile Steel from the source code. It's easy and fast.
 Steel has two parts. Libsteel which is the shared library and implements
 all the necessary functionality for Steel to work.
 
+For more information, see https://www.steelpasswordmanager.org
+
 Libsteel depends on SQLite, Mhash and Libmcrypt. Of course also GCC and GNU Make
 are required.
 

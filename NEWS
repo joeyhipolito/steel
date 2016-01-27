@@ -1,3 +1,16 @@
+1.3: 2016-01-26
+
+     Version 1.3 released.
+
+     This release has no changes in functionality. Basically
+     this one is identical to the version 1.2. However, there's
+     one big change. Steel core functionality is now separated
+     into a shared library called libsteel.
+
+     Version 1.3 of Steel is now build against that library.
+     The change was made to make it easier to build a graphical
+     user interface for Steel. So yes, GUI is coming in the near future.
+     
 1.2: 2016-01-10
 
      Version 1.2 released.
