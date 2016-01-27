@@ -1,11 +1,11 @@
 CC=gcc
 override CFLAGS+=-std=c99 -Wall
 PREFIX=/usr/local
-LDFLAGS=-lsteek
+LDFLAGS=-lsteel
 
 all: steel
 
-steel: cmd_ui.o
+steel: cmd_ui.o steel.o
 	$(CC) $(CFLAGS) steel.o cmd_ui.o -o steel $(LDFLAGS)
 
 steel.o: steel.c

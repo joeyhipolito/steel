@@ -28,7 +28,7 @@
 #include <termios.h>
 #include "../libsteel/database.h"
 #include "../libsteel/crypto.h"
-#include "../libsteel/cmd_ui.h"
+#include "cmd_ui.h"
 #include "../libsteel/status.h"
 #include "../libsteel/backup.h"
 

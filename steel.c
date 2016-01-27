@@ -24,7 +24,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <getopt.h>
-#include "../libsteel/cmd_ui.h"
+#include "cmd_ui.h"
 
 #define VERSION 1.2
 
