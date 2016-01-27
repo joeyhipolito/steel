@@ -1,6 +1,11 @@
 At the moment there's no binary packages available for Steel, so you will need 
-to compile Steel from the source code. It's easy and fast. Steel depends on SQLite, 
-Mhash and Libmcrypt. Of course also GCC and GNU Make are required.
+to compile Steel from the source code. It's easy and fast.
+
+Steel has two parts. Libsteel which is the shared library and implements
+all the necessary functionality for Steel to work.
+
+Libsteel depends on SQLite, Mhash and Libmcrypt. Of course also GCC and GNU Make
+are required.
 
 To install the dependencies on Mint 17.3 or Ubuntu 14.04:
 
@@ -9,20 +14,19 @@ To install the dependencies on Mint 17.3 or Ubuntu 14.04:
 To install the dependencies on Archlinux:
 
       sudo pacman -S libmcrypt mhash sqlite
-      
-To install on OS X:
 
-For OS X, you need to first install libsqlite3 libmcrypt, and have XCode installed
+To compile libsteel, move to the source code directory and type
 
-With Homebrew:
+      make
+      sudo make install
 
-	brew install mcrypt sqlite
+libsteel will be installed on /usr/local/lib/. 
 
-
-To install Steel move to Steel source code directory and type following commands:
+To install Steel command line client move to Steel source code directory
+and type following commands:
 
       make
       sudo make install
     
 Steel will be installed on /usr/local/bin/ by default. Man page will be installed 
-to /usr/local/share/man/man1/. 
+to /usr/local/share/man/man1/.
