@@ -5,7 +5,7 @@ the shell. With Steel your passwords are safe. Steel uses AES encryption in CFB
 mode with 256 bit keys. Steel is simple, Steel is advanced, Steel is adaptable.
 Steel is the new prophet of password management.
 
-Steel uses libsteel library (https://gitlab.com/Rosvall/libsteel)
+Steel uses libsteel library (https://github.com/nrosvall/libsteel)
 
 Steel is Free Software under the GPLv3+ license.
 
