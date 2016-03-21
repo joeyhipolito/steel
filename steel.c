@@ -50,30 +50,30 @@ steel [FLAGS] <OPTIONS>\n\
 \n\
 OPTIONS\n\
 \n\
--i, --init-new		  <path>						Create a new database\n\
--o, --open			  <path>						Decrypt existing database\n\
--c, --close										   Encrypt open database\n\
--a, --add			   <title> <user> <url> <notes>  Add new entry to database\n\
--a, --add			   -I							Add new entry interactively\n\
--s, --show			  <id>						  Show entry by id\n\
--g, --gen-pass		  <length> [count]			  Generate secure password\n\
--d, --delete			<id>						  Delete an entry by id\n\
--e, --edit			  <id> <what> [content]		 Edit an entry data\n\
-							  <what> can be either \"user\",\n\
-							  \"title\", \"url\", \"notes\" or\n\
-								  \"passphrase\".\n\
--e, --edit			  -I <id>					   Edit an entry data interactively\n\
+-i, --init-new		  <path>						 Create a new database\n\
+-o, --open			  <path>						 Decrypt existing database\n\
+-c, --close										     Encrypt open database\n\
+-a, --add			  <title> <user> <url> <notes>   Add new entry to database\n\
+-a, --add			   -I							 Add new entry interactively\n\
+-s, --show			  <id>						     Show entry by id\n\
+-g, --gen-pass		  <length> [count]			     Generate secure password\n\
+-d, --delete		  <id>						     Delete an entry by id\n\
+-e, --edit			  <id> <what> [content]		     Edit an entry data\n\
+							                        <what> can be either \"user\",\n\
+							                        \"title\", \"url\", \"notes\" or\n\
+								                    \"passphrase\".\n\
+-e, --edit			  -I <id>					    Edit an entry data interactively\n\
 -R, --shred-db		  <path>						Shred database\n\
--f, --find			  <search>					  Search database\n\
+-f, --find			  <search>					    Search database\n\
 -l, --list-all										Show all entries\n\
--S, --show-status									 Show database statuses\n\
--b, --backup			<source> <destination>		Backup database\n\
--B, --import-backup	 <source> <destination>		Import database backup\n\
--V, --version										 Show program version\n\
--p, --show-passphrase   <id>						  Show an entry passphrase\n\
--u, --show-username	 <id>						  Show an entry username\n\
--U, --show-url		  <id>						  Show an entry url\n\
--n, --show-notes		<id>						  Show an entry notes\n\
+-S, --show-status									Show database statuses\n\
+-b, --backup		  <source> <destination>		Backup database\n\
+-B, --import-backup	  <source> <destination>		Import database backup\n\
+-V, --version										Show program version\n\
+-p, --show-passphrase <id>						    Show an entry passphrase\n\
+-u, --show-username	  <id>						    Show an entry username\n\
+-U, --show-url		  <id>						    Show an entry url\n\
+-n, --show-notes	  <id>						    Show an entry notes\n\
 -h, --help											Show short help and exit\n\
 \n\
 FLAGS\n\
@@ -118,25 +118,25 @@ main(int argc, char *argv[])
     	{
     		{"with-passphrases", no_argument, &list_passphrases, 1},
 
-    		{"init-new",		 required_argument, 0, 'i'},
+    		{"init-new",	   required_argument, 0, 'i'},
     		{"backup",		   required_argument, 0, 'b'},
-    		{"import-backup",	required_argument, 0, 'B'},
-    		{"open",			 required_argument, 0, 'o'},
-    		{"close",			no_argument,	   0, 'c'},
-    		{"show",			 required_argument, 0, 's'},
-    		{"gen-pass",		 required_argument, 0, 'g'},
-    		{"add",			  required_argument, 0, 'a'},
+    		{"import-backup",  required_argument, 0, 'B'},
+    		{"open",		   required_argument, 0, 'o'},
+    		{"close",		   no_argument,	      0, 'c'},
+    		{"show",		   required_argument, 0, 's'},
+    		{"gen-pass",	   required_argument, 0, 'g'},
+    		{"add",			   required_argument, 0, 'a'},
     		{"delete",		   required_argument, 0, 'd'},
-    		{"edit",			 required_argument, 0, 'e'},
-    		{"shred-db",		 required_argument, 0, 'R'},
-    		{"find",			 required_argument, 0, 'f'},
-    		{"list-all",		 no_argument,	   0, 'l'},
-    		{"show-status",	  no_argument,	   0, 'S'},
-    		{"version",		  no_argument,	   0, 'V'},
-    		{"help",			 no_argument,	   0, 'h'},
-    		{"show-passphrase",  required_argument, 0, 'p'},
-    		{"show-username",	required_argument, 0, 'u'},
-    		{"show-url",		 required_argument, 0, 'U'},
+    		{"edit",		   required_argument, 0, 'e'},
+    		{"shred-db",	   required_argument, 0, 'R'},
+    		{"find",		   required_argument, 0, 'f'},
+    		{"list-all",	   no_argument,	      0, 'l'},
+    		{"show-status",	   no_argument,	      0, 'S'},
+    		{"version",		   no_argument,	      0, 'V'},
+    		{"help",		   no_argument,	      0, 'h'},
+    		{"show-passphrase",required_argument, 0, 'p'},
+    		{"show-username",  required_argument, 0, 'u'},
+    		{"show-url",	   required_argument, 0, 'U'},
     		{"show-notes",	   required_argument, 0, 'n'},
     		{0, 0, 0, 0}
     	 };
