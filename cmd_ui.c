@@ -436,7 +436,7 @@ delete_entry(int id)
         else
         {
             if(!success)
-            fprintf(stderr, "No entry found with id %d.\n", id);
+                fprintf(stderr, "No entry found with id %d.\n", id);
         }
     }
 }
@@ -464,7 +464,7 @@ find_entries(const char *search, int show_passphrase)
     if(list == NULL)
     {
         fprintf(stderr, "Cannot perform the search operation.\n");
-        return;
+            return;
     }
 
     Entry_t *new_head = list->next;
@@ -830,7 +830,7 @@ remove_database(const char *path)
             status_del_tracking(path);
 
             if(!encrypted)
-            db_remove_lockfile();
+                db_remove_lockfile();
         }
         else
         {
