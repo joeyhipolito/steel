@@ -638,7 +638,7 @@ void
 replace_interactively(int id)
 {
     if(!steel_tracker_file_exists())
-    return;
+        return;
 
     Entry_t *entry = NULL;
     Entry_t *head = NULL;
