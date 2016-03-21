@@ -261,8 +261,8 @@ main(int argc, char *argv[])
         		{
         			if(!argv[optind + 1])
         			{
-        			fprintf(stderr, "Missing option, see -h for help\n");
-        			return 0;
+                        fprintf(stderr, "Missing option, see -h for help\n");
+                        return 0;
         			}
         		}
 
