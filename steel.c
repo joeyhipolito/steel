@@ -30,14 +30,14 @@
 
 static void
 version_print()
-{  
-    char *str = "This is free software; see the source for copying conditions.\n" \
+{
+	char *str = "This is free software; see the source for copying conditions.\n" \
 	"There is no warranty; not even for MERCHANTABILITY or FITNESS\n" \
 	"FOR A PARTICULAR PURPOSE.\n";
 
-    printf("Steel v%.1f Copyright (c) Niko Rosvall <niko@byteptr.com>\n",
+	printf("Steel v%.1f Copyright (c) Niko Rosvall <niko@byteptr.com>\n",
 	   VERSION);
-    printf("%s", str);
+	printf("%s", str);
 }
 
 static void
@@ -50,35 +50,35 @@ steel [FLAGS] <OPTIONS>\n\
 \n\
 OPTIONS\n\
 \n\
--i, --init-new          <path>                        Create a new database\n\
--o, --open              <path>                        Decrypt existing database\n\
--c, --close                                           Encrypt open database\n\
--a, --add               <title> <user> <url> <notes>  Add new entry to database\n\
--a, --add               -I                            Add new entry interactively\n\
--s, --show              <id>                          Show entry by id\n\
--g, --gen-pass          <length> [count]              Generate secure password\n\
--d, --delete            <id>                          Delete an entry by id\n\
--e, --edit              <id> <what> [content]         Edit an entry data\n\
-						      <what> can be either \"user\",\n\
-						      \"title\", \"url\", \"notes\" or\n\
-					              \"passphrase\".\n\
--e, --edit              -I <id>                       Edit an entry data interactively\n\
--R, --shred-db          <path>                        Shred database\n\
--f, --find              <search>                      Search database\n\
--l, --list-all                                        Show all entries\n\
--S, --show-status                                     Show database statuses\n\
--b, --backup            <source> <destination>        Backup database\n\
--B, --import-backup     <source> <destination>        Import database backup\n\
--V, --version                                         Show program version\n\
--p, --show-passphrase   <id>                          Show an entry passphrase\n\
--u, --show-username     <id>                          Show an entry username\n\
--U, --show-url          <id>                          Show an entry url\n\
--n, --show-notes        <id>                          Show an entry notes\n\
--h, --help                                            Show short help and exit\n\
+-i, --init-new		  <path>						Create a new database\n\
+-o, --open			  <path>						Decrypt existing database\n\
+-c, --close										   Encrypt open database\n\
+-a, --add			   <title> <user> <url> <notes>  Add new entry to database\n\
+-a, --add			   -I							Add new entry interactively\n\
+-s, --show			  <id>						  Show entry by id\n\
+-g, --gen-pass		  <length> [count]			  Generate secure password\n\
+-d, --delete			<id>						  Delete an entry by id\n\
+-e, --edit			  <id> <what> [content]		 Edit an entry data\n\
+							  <what> can be either \"user\",\n\
+							  \"title\", \"url\", \"notes\" or\n\
+								  \"passphrase\".\n\
+-e, --edit			  -I <id>					   Edit an entry data interactively\n\
+-R, --shred-db		  <path>						Shred database\n\
+-f, --find			  <search>					  Search database\n\
+-l, --list-all										Show all entries\n\
+-S, --show-status									 Show database statuses\n\
+-b, --backup			<source> <destination>		Backup database\n\
+-B, --import-backup	 <source> <destination>		Import database backup\n\
+-V, --version										 Show program version\n\
+-p, --show-passphrase   <id>						  Show an entry passphrase\n\
+-u, --show-username	 <id>						  Show an entry username\n\
+-U, --show-url		  <id>						  Show an entry url\n\
+-n, --show-notes		<id>						  Show an entry notes\n\
+-h, --help											Show short help and exit\n\
 \n\
 FLAGS\n\
 \n\
--w, --with-passphrases                                Show passphrases in listings\n\
+-w, --with-passphrases								Show passphrases in listings\n\
 \n\
 For more information and examples see man steel(1).\n\
 \n\
@@ -88,224 +88,224 @@ Copyright (C) 2016 Niko Rosvall <niko@byteptr.com>\n\
 Released under license GPL-3+. For more information, see\n\
 http://www.gnu.org/licenses\n\
 "
-    printf(HELP);
+	printf(HELP);
 }
 
 /*Program entry point.*/
 int
 main(int argc, char *argv[])
 {
-    int option;
-    static int list_passphrases = 0;
+	int option;
+	static int list_passphrases = 0;
 
-    if(argc == 1)
-    {
-	usage();
+	if(argc == 1)
+	{
+		usage();
+		return 0;
+	}
+
+	opterr = 0;
+
+	for(char **arg = argv; *arg; ++arg)
+	{
+		if(strcmp(*arg, "-w") == 0)
+			list_passphrases = 1;
+	}
+
+	while(true)
+	{
+    	static struct option long_options[] =
+    	{
+    		{"with-passphrases", no_argument, &list_passphrases, 1},
+
+    		{"init-new",		 required_argument, 0, 'i'},
+    		{"backup",		   required_argument, 0, 'b'},
+    		{"import-backup",	required_argument, 0, 'B'},
+    		{"open",			 required_argument, 0, 'o'},
+    		{"close",			no_argument,	   0, 'c'},
+    		{"show",			 required_argument, 0, 's'},
+    		{"gen-pass",		 required_argument, 0, 'g'},
+    		{"add",			  required_argument, 0, 'a'},
+    		{"delete",		   required_argument, 0, 'd'},
+    		{"edit",			 required_argument, 0, 'e'},
+    		{"shred-db",		 required_argument, 0, 'R'},
+    		{"find",			 required_argument, 0, 'f'},
+    		{"list-all",		 no_argument,	   0, 'l'},
+    		{"show-status",	  no_argument,	   0, 'S'},
+    		{"version",		  no_argument,	   0, 'V'},
+    		{"help",			 no_argument,	   0, 'h'},
+    		{"show-passphrase",  required_argument, 0, 'p'},
+    		{"show-username",	required_argument, 0, 'u'},
+    		{"show-url",		 required_argument, 0, 'U'},
+    		{"show-notes",	   required_argument, 0, 'n'},
+    		{0, 0, 0, 0}
+    	 };
+
+    	int option_index = 0;
+
+    	option = getopt_long(argc, argv, "Pi:b:B:o:cs:g:a:d:e:f:lR:SVp:u:U:n:h",
+    				 long_options, &option_index);
+
+    	if(option == -1)
+    		break;
+
+    	switch(option)
+    	{
+    	case 'i':
+    		init_database(optarg);
+    		break;
+    	case 'b':
+    		if(!argv[optind])
+    		{
+        		fprintf(stderr, "Missing option <destination>.\n");
+        		return 0;
+    		}
+    		backup_database(optarg, argv[optind]);
+    		break;
+    	case 'B':
+    		if(!argv[optind])
+    		{
+        		fprintf(stderr, "Missing option <destination>.\n");
+        		return 0;
+    		}
+    		backup_import_database(optarg, argv[optind]);
+    		break;
+    	case 'o':
+    		open_database(optarg);
+    		break;
+    	case 'c':
+    		close_database();
+    		break;
+    	case 's':
+    		show_one_entry(atoi(optarg), list_passphrases);
+    		break;
+    	case 'g': {
+    		int count = 1;
+
+    		if(argv[optind])
+    		{
+    			count = atoi(argv[optind]);
+
+    			if(count < 1)
+    				count = 1;
+    		}
+
+    		generate_password(atoi(optarg), count);
+    		break;
+    	}
+    	case 'a':
+    	{
+    		/*Ask input interactively*/
+    		if(strcmp(optarg, "-I") == 0)
+    		{
+    			add_new_entry_interactive();
+    		}
+    		else
+    		{
+        		if(!argv[optind])
+        		{
+        			fprintf(stderr, "Missing option user.\n");
+        			return 0;
+        		}
+
+        		if(!argv[optind + 1])
+        		{
+        			fprintf(stderr, "Missing option address.\n");
+        			return 0;
+        		}
+
+        		if(!argv[optind + 2])
+        		{
+        			fprintf(stderr, "Missing option notes.\n");
+        			return 0;
+        		}
+
+        		char *title = optarg;
+        		char *user = argv[optind];
+        		char *url = argv[optind + 1];
+        		char *note = argv[optind + 2];
+
+        		add_new_entry(title, user, url, note);
+    		}
+    		break;
+    	}
+    	case 'd':
+    		delete_entry(atoi(optarg));
+    		break;
+    	case 'e':
+    	{
+    		/*Edit interactively*/
+    		if(strcmp(optarg, "-I") == 0)
+    		{
+        		if(!argv[optind])
+        		{
+        			fprintf(stderr, "Missing option, see -h for help\n");
+        			return 0;
+        		}
+
+        		int id = atoi(argv[optind]);
+        		replace_interactively(id);
+    		}
+    		else
+    		{
+        		if(!argv[optind])
+        		{
+        			fprintf(stderr, "Missing option, see -h for help\n");
+        			return 0;
+        		}
+
+        		/*Replacing passphrase does not need third argument
+        		 *It will be asked separately by replace_part()
+        		 */
+        		if(strcmp(argv[optind], "passphrase") != 0)
+        		{
+        			if(!argv[optind + 1])
+        			{
+        			fprintf(stderr, "Missing option, see -h for help\n");
+        			return 0;
+        			}
+        		}
+
+        		int id = atoi(optarg);
+        		char *what = argv[optind];
+        		char *content = argv[optind + 1];
+
+        		replace_part(id, what, content);
+    		}
+    		break;
+    	}
+    	case 'f':
+    		find_entries(optarg, list_passphrases);
+    		break;
+    	case 'p':
+    		show_passphrase_only(atoi(optarg));
+    		break;
+    	case 'u':
+    		show_username_only(atoi(optarg));
+    		break;
+    	case 'U':
+    		show_url_only(atoi(optarg));
+    		break;
+    	case 'n':
+    		show_notes_only(atoi(optarg));
+    		break;
+    	case 'l':
+    		show_all_entries(list_passphrases);
+    		break;
+    	case 'R':
+    		remove_database(optarg);
+    		break;
+    	case 'S':
+    		show_database_statuses();
+    		break;
+    	case 'V':
+    		version_print();
+    		break;
+    	case 'h':
+    		usage();
+    		break;
+    	}
+	}
+
 	return 0;
-    }
-
-    opterr = 0;
-
-    for(char **arg = argv; *arg; ++arg)
-    {
-	if(strcmp(*arg, "-w") == 0)
-	    list_passphrases = 1;
-    }
-
-    while(true)
-    {
-	static struct option long_options[] =
-	{
-	    {"with-passphrases", no_argument, &list_passphrases, 1},
-			
-	    {"init-new",         required_argument, 0, 'i'},
-	    {"backup",           required_argument, 0, 'b'},
-	    {"import-backup",    required_argument, 0, 'B'},
-	    {"open",             required_argument, 0, 'o'},
-	    {"close",            no_argument,       0, 'c'},
-	    {"show",             required_argument, 0, 's'},
-	    {"gen-pass",         required_argument, 0, 'g'},
-	    {"add",              required_argument, 0, 'a'},
-	    {"delete",           required_argument, 0, 'd'},
-	    {"edit",             required_argument, 0, 'e'},
-	    {"shred-db",         required_argument, 0, 'R'},
-	    {"find",             required_argument, 0, 'f'},
-	    {"list-all",         no_argument,       0, 'l'},
-	    {"show-status",      no_argument,       0, 'S'},
-	    {"version",          no_argument,       0, 'V'},
-	    {"help",             no_argument,       0, 'h'},
-	    {"show-passphrase",  required_argument, 0, 'p'},
-	    {"show-username",    required_argument, 0, 'u'},
-	    {"show-url",         required_argument, 0, 'U'},
-	    {"show-notes",       required_argument, 0, 'n'},
-	    {0, 0, 0, 0}
-	 };
-
-	int option_index = 0;
-
-	option = getopt_long(argc, argv, "Pi:b:B:o:cs:g:a:d:e:f:lR:SVp:u:U:n:h",
-			     long_options, &option_index);
-
-	if(option == -1)
-	    break;
-
-	switch(option)
-	{
-	case 'i':
-	    init_database(optarg);
-	    break;
-	case 'b':
-	    if(!argv[optind])
-	    {
-		fprintf(stderr, "Missing option <destination>.\n");
-		return 0;
-	    }
-	    backup_database(optarg, argv[optind]);
-	    break;
-	case 'B':
-	    if(!argv[optind])
-	    {
-		fprintf(stderr, "Missing option <destination>.\n");
-		return 0;
-	    }
-	    backup_import_database(optarg, argv[optind]);
-	    break;
-	case 'o':
-	    open_database(optarg);
-	    break;
-	case 'c':
-	    close_database();
-	    break;
-	case 's':
-	    show_one_entry(atoi(optarg), list_passphrases);
-	    break;
-	case 'g': {
-	    int count = 1;
-
-	    if(argv[optind])
-	    {
-		count = atoi(argv[optind]);
-
-		if(count < 1)
-		    count = 1;
-	    }
-
-	    generate_password(atoi(optarg), count);
-	    break;
-	}
-	case 'a':
-	{
-	    /*Ask input interactively*/
-	    if(strcmp(optarg, "-I") == 0)
-	    {
-		add_new_entry_interactive();
-	    }
-	    else
-	    {				
-		if(!argv[optind])
-		{
-		    fprintf(stderr, "Missing option user.\n");
-		    return 0;
-		}
-					
-		if(!argv[optind + 1])
-		{
-		    fprintf(stderr, "Missing option address.\n");
-		    return 0;
-		}
-					
-		if(!argv[optind + 2])
-		{
-		    fprintf(stderr, "Missing option notes.\n");
-		    return 0;
-		}
-					
-		char *title = optarg;
-		char *user = argv[optind];
-		char *url = argv[optind + 1];
-		char *note = argv[optind + 2];
-
-		add_new_entry(title, user, url, note);
-	    }
-	    break;
-	}
-	case 'd':
-	    delete_entry(atoi(optarg));
-	    break;
-	case 'e':
-	{
-	    /*Edit interactively*/
-	    if(strcmp(optarg, "-I") == 0)
-	    {
-		if(!argv[optind])
-		{
-		    fprintf(stderr, "Missing option, see -h for help\n");
-		    return 0;
-		}
-
-		int id = atoi(argv[optind]);
-		replace_interactively(id);
-	    }
-	    else
-	    {
-		if(!argv[optind])
-		{
-		    fprintf(stderr, "Missing option, see -h for help\n");
-		    return 0;
-		}
-
-		/*Replacing passphrase does not need third argument
-		 *It will be asked separately by replace_part()
-		 */
-		if(strcmp(argv[optind], "passphrase") != 0)
-		{
-		    if(!argv[optind + 1])
-		    {
-			fprintf(stderr, "Missing option, see -h for help\n");
-			return 0;
-		    }
-		}
-
-		int id = atoi(optarg);
-		char *what = argv[optind];
-		char *content = argv[optind + 1];
-	    
-		replace_part(id, what, content);
-	    }
-	    break;
-	}
-	case 'f':
-	    find_entries(optarg, list_passphrases);
-	    break;
-	case 'p':
-	    show_passphrase_only(atoi(optarg));
-	    break;
-	case 'u':
-	    show_username_only(atoi(optarg));
-	    break;
-	case 'U':
-	    show_url_only(atoi(optarg));
-	    break;
-	case 'n':
-	    show_notes_only(atoi(optarg));
-	    break;
-	case 'l':
-	    show_all_entries(list_passphrases);
-	    break;
-	case 'R':
-	    remove_database(optarg);
-	    break;
-	case 'S':
-	    show_database_statuses();
-	    break;
-	case 'V':
-	    version_print();
-	    break;
-	case 'h':
-	    usage();
-	    break;
-	}
-    }
-
-    return 0;
 }
