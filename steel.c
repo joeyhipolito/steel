@@ -50,35 +50,35 @@ steel [FLAGS] <OPTIONS>\n\
 \n\
 OPTIONS\n\
 \n\
--i, --init-new		  <path>						 Create a new database\n\
--o, --open			  <path>						 Decrypt existing database\n\
--c, --close										     Encrypt open database\n\
--a, --add			  <title> <user> <url> <notes>   Add new entry to database\n\
--a, --add			   -I							 Add new entry interactively\n\
--s, --show			  <id>						     Show entry by id\n\
--g, --gen-pass		  <length> [count]			     Generate secure password\n\
--d, --delete		  <id>						     Delete an entry by id\n\
--e, --edit			  <id> <what> [content]		     Edit an entry data\n\
-							                        <what> can be either \"user\",\n\
-							                        \"title\", \"url\", \"notes\" or\n\
-								                    \"passphrase\".\n\
--e, --edit			  -I <id>					    Edit an entry data interactively\n\
--R, --shred-db		  <path>						Shred database\n\
--f, --find			  <search>					    Search database\n\
--l, --list-all										Show all entries\n\
--S, --show-status									Show database statuses\n\
--b, --backup		  <source> <destination>		Backup database\n\
--B, --import-backup	  <source> <destination>		Import database backup\n\
--V, --version										Show program version\n\
--p, --show-passphrase <id>						    Show an entry passphrase\n\
--u, --show-username	  <id>						    Show an entry username\n\
--U, --show-url		  <id>						    Show an entry url\n\
--n, --show-notes	  <id>						    Show an entry notes\n\
--h, --help											Show short help and exit\n\
+-i, --init-new	      <path>			   Create a new database\n\
+-o, --open	      <path>			   Decrypt existing database\n\
+-c, --close					   Encrypt open database\n\
+-a, --add	      <title> <user> <url> <notes> Add new entry to database\n\
+-a, --add	      -I			   Add new entry interactively\n\
+-s, --show	      <id>			   Show entry by id\n\
+-g, --gen-pass	      <length> [count]		   Generate secure password\n\
+-d, --delete	      <id>			   Delete an entry by id\n\
+-e, --edit	      <id> <what> [content]	   Edit an entry data\n\
+						   <what> can be either \"user\",\n\
+						   \"title\", \"url\", \"notes\" or\n\
+						   \"passphrase\".\n\
+-e, --edit	      -I <id>			   Edit an entry data interactively\n\
+-R, --shred-db	      <path>			   Shred database\n\
+-f, --find	      <search>			   Search database\n\
+-l, --list-all					   Show all entries\n\
+-S, --show-status				   Show database statuses\n\
+-b, --backup	      <source> <destination>	   Backup database\n\
+-B, --import-backup   <source> <destination>	   Import database backup\n\
+-V, --version					   Show program version\n\
+-p, --show-passphrase <id>			   Show an entry passphrase\n\
+-u, --show-username   <id>			   Show an entry username\n\
+-U, --show-url	      <id>			   Show an entry url\n\
+-n, --show-notes      <id>			   Show an entry notes\n\
+-h, --help					   Show short help and exit\n\
 \n\
 FLAGS\n\
 \n\
--w, --with-passphrases								Show passphrases in listings\n\
+-w, --with-passphrases                             Show passphrases in listings\n\
 \n\
 For more information and examples see man steel(1).\n\
 \n\
