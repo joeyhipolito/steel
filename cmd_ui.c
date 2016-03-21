@@ -227,7 +227,7 @@ void
 close_database()
 {
     if(!steel_tracker_file_exists())
-    return;
+        return;
 
     size_t pwdlen = 1024;
     char passphrase[pwdlen];
