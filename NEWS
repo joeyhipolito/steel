@@ -1,3 +1,19 @@
+1.4: 2016-04-08
+    
+     Version 1.4 released.
+     
+     This is a minor bug fix release.
+     
+     -R is no longer using shred to remove the database. Shredding
+     is not effective on SSD disks. Until I'll figure out better solution
+     -R performs normal remove operation.
+     
+     Removing calls to shred also fixed one security bug, which was introduced
+     by the way shred was called.
+     
+     This is the first version of command line Steel compatible with libsteel
+     2.0
+
 1.3: 2016-01-26
 
      Version 1.3 released.
