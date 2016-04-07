@@ -1,13 +1,13 @@
 .\" Manpage for steel.
 .\" Any errors or typos, contact niko@byteptr.com.
 
-.TH man 1 "26 Jan 2016" "1.3" "steel man page"
+.TH man 1 "4 Apr 2016" "1.4" "steel man page"
 .SH NAME
 steel \- command line password manager
 .SH SYNOPSIS
 steel [FLAGS] <OPTIONS>
 .SH DESCRIPTION
-Steel is a command line password manager for Unix like 
+Steel is a command line password manager for Unix like
 operating systems.
 .SH OPTIONS
 .IP "-i, --init-new <path>"
@@ -30,8 +30,8 @@ Edit an entry data. <what> can be either
 For "passphrase" content is not needed.
 .IP "-e, --edit -I <id>"
 Edit an entry interactively.
-.IP "-R, --shred-db <path>"
-Shred database. On Cygwin, normal file remove operation
+.IP "-R, --rm-db <path>"
+Remove database.
 is used.
 .IP "-f, --find <search>"
 Search database
@@ -61,7 +61,7 @@ Show passphrases in listings
 .SH EXAMPLES
 Create a new database:
        steel --init-new "/path/to/file.db"
-.PP        
+.PP
 Open and decrypt database:
        steel --open "/path/to/existing/file.db"
 .PP
@@ -102,8 +102,8 @@ everytime when you close the database, if you want to.
 Note that while using xclip example above might be useful, the passphrase will
 be in you clipboard as plain text.
 .PP
-Steel includes -R option which shreds database files. Note that shredding is not
-effective on SSD disks. File will be removed, but not securely.
+Steel includes -R option which removes database files. This is no longer
+a shredding operation as it's not effective on SSD disks.
 .SH FILES
 .I $HOME/.steel_open
 .I $HOME/.steel_dbs

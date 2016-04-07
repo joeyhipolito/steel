@@ -26,11 +26,11 @@
 #include <stdbool.h>
 #include <string.h>
 #include <termios.h>
-#include "../libsteel/database.h"
-#include "../libsteel/crypto.h"
+#include <steel/database.h>
+#include <steel/crypto.h>
 #include "cmd_ui.h"
-#include "../libsteel/status.h"
-#include "../libsteel/backup.h"
+#include <steel/status.h>
+#include <steel/backup.h>
 
 extern int fileno(FILE *stream);
 
@@ -119,11 +119,11 @@ static bool
 open_db_exist(const char *message)
 {
     char *old = NULL;
-    old = read_path_from_lockfile();
+    old = steel_read_path_from_lockfile();
 
     if(old != NULL)
     {
-        if(db_file_exists(old))
+        if(steel_db_file_exists(old))
         {
             fprintf(stderr, "An open database exists. To improve security only one\n" \
                 "passphrase database can be open at once.\n");
@@ -147,7 +147,7 @@ steel_tracker_file_exists()
 {
     char *dbs = NULL;
 
-    dbs = status_get_file_path();
+    dbs = steel_status_get_file_path();
 
     if(dbs == NULL)
     {
@@ -158,7 +158,7 @@ steel_tracker_file_exists()
     /*We can use db_file_exists function to check any file existence.
      *In the end, it's just simple check, not related to databases.
      */
-    if(!db_file_exists(dbs))
+    if(!steel_db_file_exists(dbs))
     {
         fprintf(stdout, "No databases found.\n");
         free(dbs);
@@ -180,13 +180,13 @@ init_database(const char *path)
     if(open_db_exist("creating"))
         return false;
 
-    if(!db_init(path))
+    if(!steel_db_init(path))
     {
         fprintf(stderr, "Database initialization unsuccessful\n");
         return false;
     }
 
-    status_set_tracking(path);
+    steel_status_set_tracking(path);
 
     return true;
 }
@@ -210,7 +210,7 @@ open_database(const char *path)
 
     my_getpass(MASTER_PWD_PROMPT, &ptr, &pwdlen, stdin);
 
-    if(!db_open(path, passphrase))
+    if(!steel_db_open(path, passphrase))
     {
         fprintf(stderr, "Database opening unsuccessful.\n");
         return false;
@@ -236,7 +236,7 @@ close_database()
     char *ptr2 = pass2;
     char *path = NULL;
 
-    path = read_path_from_lockfile();
+    path = steel_read_path_from_lockfile();
 
     if(path == NULL)
     {
@@ -255,7 +255,7 @@ close_database()
         return;
     }
 
-    db_close(passphrase);
+    steel_db_close(passphrase);
 }
 
 /*This is called from main(). Adds new entry to the database.*/
@@ -271,7 +271,7 @@ add_new_entry(char *title, char *user, char *url, char *note)
     char pass[pwdlen];
     char *ptr = pass;
 
-    id = db_get_next_id();
+    id = steel_db_get_next_id();
 
     if(id == -1)
     {
@@ -281,15 +281,15 @@ add_new_entry(char *title, char *user, char *url, char *note)
 
     my_getpass(ENTRY_PWD_PROMPT, &ptr, &pwdlen, stdin);
 
-    Entry_t *entry = list_create(title, user, pass, url, note, id, NULL);
+    Entry_t *entry = steel_list_create(title, user, pass, url, note, id, NULL);
 
-    if(!db_add_entry(entry))
+    if(!steel_db_add_entry(entry))
     {
         fprintf(stderr, "Failed to add a new entry.\n");
         return;
     }
 
-    list_free(entry);
+    steel_list_free(entry);
 }
 
 /*Add new entry interactively*/
@@ -308,7 +308,7 @@ add_new_entry_interactive()
     char *ptr = pass;
     int id;
 
-    id = db_get_next_id();
+    id = steel_db_get_next_id();
 
     if(id == -1)
     {
@@ -332,16 +332,16 @@ add_new_entry_interactive()
     strip_newline_str(url);
     strip_newline_str(notes);
 
-    Entry_t *entry = list_create(title, user, pass, url,
+    Entry_t *entry = steel_list_create(title, user, pass, url,
                  notes, id, NULL);
 
-    if(!db_add_entry(entry))
+    if(!steel_db_add_entry(entry))
     {
         fprintf(stderr, "Failed to add a new entry.\n");
         return;
     }
 
-    list_free(entry);
+    steel_list_free(entry);
 }
 
 /*Print all available entries to stdin.
@@ -358,12 +358,12 @@ show_all_entries(int show_passphrase)
     if(!steel_tracker_file_exists())
         return;
 
-    Entry_t *list = db_get_all_entries();
+    Entry_t *list = steel_db_get_all_entries();
 
     if(list != NULL)
     {
-        list_print(list, show_pass);
-        list_free(list);
+        steel_list_print(list, show_pass);
+        steel_list_free(list);
     }
 }
 
@@ -381,7 +381,7 @@ show_one_entry(int id, int show_passphrase)
     if(!steel_tracker_file_exists())
         return;
 
-    Entry_t *entry = db_get_entry_by_id(id);
+    Entry_t *entry = steel_db_get_entry_by_id(id);
 
     if(entry == NULL)
     {
@@ -399,7 +399,7 @@ show_one_entry(int id, int show_passphrase)
 
         if(next != NULL)
         {
-            list_print_one(next, show_pass);
+            steel_list_print_one(next, show_pass);
         }
         else
         {
@@ -407,7 +407,7 @@ show_one_entry(int id, int show_passphrase)
         }
     }
 
-    list_free(entry);
+    steel_list_free(entry);
 }
 
 /*Delete entry by id from the database.
@@ -429,7 +429,7 @@ delete_entry(int id)
     if(ch == 'y' || ch == 'Y')
     {
 
-        if(!db_delete_entry_by_id(id, &success))
+        if(!steel_db_delete_entry_by_id(id, &success))
         {
             fprintf(stderr, "Entry deletion failed.\n");
         }
@@ -455,7 +455,7 @@ find_entries(const char *search, int show_passphrase)
     if(!steel_tracker_file_exists())
         return;
 
-    Entry_t *list = db_get_all_entries();
+    Entry_t *list = steel_db_get_all_entries();
     char *title = NULL;
     char *user = NULL;
     char *url = NULL;
@@ -482,7 +482,7 @@ find_entries(const char *search, int show_passphrase)
            notes != NULL)
         {
 
-            list_print_one(new_head, show_pass);
+            steel_list_print_one(new_head, show_pass);
         }
 
         if(title != NULL)
@@ -500,7 +500,7 @@ find_entries(const char *search, int show_passphrase)
         new_head = new_head->next;
     }
 
-    list_free(list);
+    steel_list_free(list);
 }
 
 /*Turns echo of from the terminal and asks for a passphrase.
@@ -567,7 +567,7 @@ replace_part(int id, const char *what, const char *new_data)
     Entry_t *entry = NULL;
     Entry_t *head = NULL;
 
-    entry = db_get_entry_by_id(id);
+    entry = steel_db_get_entry_by_id(id);
 
     if(entry == NULL)
     {
@@ -582,7 +582,7 @@ replace_part(int id, const char *what, const char *new_data)
     if(head == NULL)
     {
         fprintf(stderr, "No entry found with id %d.\n", id);
-        list_free(entry);
+        steel_list_free(entry);
 
         return;
     }
@@ -624,9 +624,9 @@ replace_part(int id, const char *what, const char *new_data)
         head->notes = strdup(new_data);
     }
 
-    db_update_entry(id, head);
+    steel_db_update_entry(id, head);
 
-    list_free(entry);
+    steel_list_free(entry);
 }
 
 /*Replace an entry data interactively
@@ -650,7 +650,7 @@ replace_interactively(int id)
     char pass[pwdlen];
     char *ptr = pass;
 
-    entry = db_get_entry_by_id(id);
+    entry = steel_db_get_entry_by_id(id);
 
     if(entry == NULL)
     {
@@ -664,7 +664,7 @@ replace_interactively(int id)
     if(head == NULL)
     {
         fprintf(stderr, "No entry found with id %d.\n", id);
-        list_free(entry);
+        steel_list_free(entry);
 
         return;
     }
@@ -700,8 +700,8 @@ replace_interactively(int id)
     if(pass[0] != '\0')
         head->pwd = strdup(pass);
 
-    db_update_entry(id, head);
-    list_free(entry);
+    steel_db_update_entry(id, head);
+    steel_list_free(entry);
 }
 
 /*Function generates new password and prints it to stdout.
@@ -719,7 +719,7 @@ generate_password(int length, int count)
 
     for(int i = 0; i < count; i++)
     {
-        char *pass = generate_pass(length);
+        char *pass = steel_generate_pass(length);
 
         if(pass == NULL)
         {
@@ -745,12 +745,12 @@ show_database_statuses()
     if(!steel_tracker_file_exists())
         return;
 
-    fp = status_get_file_ptr("r");
+    fp = steel_status_get_file_ptr("r");
 
     if(fp == NULL)
         return;
 
-    count = status_count_file_lines(fp);
+    count = steel_status_count_file_lines(fp);
 
     if(count == -2)
     {
@@ -764,7 +764,7 @@ show_database_statuses()
     while(count >= 0)
     {
         char *line = NULL;
-        line = status_read_file_line(fp);
+        line = steel_status_read_file_line(fp);
 
         if(line == NULL)
         {
@@ -773,24 +773,24 @@ show_database_statuses()
             return;
         }
 
-        if(!db_file_exists(line))
+        if(!steel_db_file_exists(line))
         {
             fprintf(stderr, "Database file %s does not exist.\n",
                 line);
             fprintf(stderr, "Will disable tracking for it.\n");
             /*Remove the entry from the steel_dbs*/
-            status_del_tracking(line);
+            steel_status_del_tracking(line);
             count--;
             free(line);
             continue;
         }
 
-        if(is_file_encrypted(line))
+        if(steel_is_file_encrypted(line))
             fprintf(stdout, "%s\t%s\t%s\n", "[Encrypted]",
-                db_last_modified(line), line);
+                steel_db_last_modified(line), line);
         else
             fprintf(stdout, "%s\t%s\t%s\n", "[Decrypted]",
-                db_last_modified(line), line);
+                steel_db_last_modified(line), line);
 
         free(line);
         count--;
@@ -799,14 +799,11 @@ show_database_statuses()
     fclose(fp);
 }
 
-/*Shreds the database file pointed by path.
+/*Removes the database file pointed by path.
  *If the database is decrypted (currently the open one)
  *function will also remove .steel_open file.
  *Method will also remove entry from steel_dbs tracker file.
  *
- *On Windows uses simply remove() as shred does not exist.
- *Also on Windows manipulated files are _steel_open and _steel_dbs
- *and not the unix ones starting with a dot.
  */
 void
 remove_database(const char *path)
@@ -817,7 +814,7 @@ remove_database(const char *path)
     bool encrypted = false;
     char ch;
 
-    encrypted = is_file_encrypted(path);
+    encrypted = steel_is_file_encrypted(path);
 
     fprintf(stdout, "Are you sure? (y/N) ");
 
@@ -825,16 +822,16 @@ remove_database(const char *path)
 
     if(ch == 'y' || ch == 'Y')
     {
-        if(db_shred(path))
+        if(steel_db_rm(path))
         {
-            status_del_tracking(path);
+            steel_status_del_tracking(path);
 
             if(!encrypted)
-                db_remove_lockfile();
+                steel_db_remove_lockfile();
         }
         else
         {
-            fprintf(stderr, "Unable to shred the database.\n");
+            fprintf(stderr, "Unable to remove the database.\n");
         }
     }
     else
@@ -850,7 +847,7 @@ backup_database(const char *source, const char *dest)
     if(!steel_tracker_file_exists())
         return;
 
-    if(!backup_export(source, dest))
+    if(!steel_backup_export(source, dest))
         fprintf(stderr, "Unable to backup the database.\n");
 }
 
@@ -861,7 +858,7 @@ backup_database(const char *source, const char *dest)
 void
 backup_import_database(const char *source, const char *dest)
 {
-    if(!backup_import(source, dest))
+    if(!steel_backup_import(source, dest))
     {
         fprintf(stderr, "Unable to import the backup.\n");
         return;
@@ -875,7 +872,7 @@ show_passphrase_only(int id)
     if(!steel_tracker_file_exists())
         return;
 
-    Entry_t *entry = db_get_entry_by_id(id);
+    Entry_t *entry = steel_db_get_entry_by_id(id);
 
     if(entry == NULL)
     {
@@ -891,7 +888,7 @@ show_passphrase_only(int id)
     else
         printf("No entry found with id %d.\n", id);
 
-    list_free(entry);
+    steel_list_free(entry);
 }
 
 /*Print username of an entry to stdout*/
@@ -901,7 +898,7 @@ show_username_only(int id)
     if(!steel_tracker_file_exists())
         return;
 
-    Entry_t *entry = db_get_entry_by_id(id);
+    Entry_t *entry = steel_db_get_entry_by_id(id);
 
     if(entry == NULL)
     {
@@ -917,7 +914,7 @@ show_username_only(int id)
     else
         printf("No entry found with id %d.\n", id);
 
-    list_free(entry);
+    steel_list_free(entry);
 }
 
 /*Print url of an entry to stdout*/
@@ -927,7 +924,7 @@ show_url_only(int id)
     if(!steel_tracker_file_exists())
         return;
 
-    Entry_t *entry = db_get_entry_by_id(id);
+    Entry_t *entry = steel_db_get_entry_by_id(id);
 
     if(entry == NULL)
     {
@@ -943,7 +940,7 @@ show_url_only(int id)
     else
         printf("No entry found with id %d.\n", id);
 
-    list_free(entry);
+    steel_list_free(entry);
 }
 
 /*Print notes of an entry to stdout*/
@@ -953,7 +950,7 @@ show_notes_only(int id)
     if(!steel_tracker_file_exists())
         return;
 
-    Entry_t *entry = db_get_entry_by_id(id);
+    Entry_t *entry = steel_db_get_entry_by_id(id);
 
     if(entry == NULL)
     {
@@ -969,5 +966,5 @@ show_notes_only(int id)
     else
         printf("No entry found with id %d.\n", id);
 
-    list_free(entry);
+    steel_list_free(entry);
 }

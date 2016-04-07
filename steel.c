@@ -26,7 +26,7 @@
 #include <getopt.h>
 #include "cmd_ui.h"
 
-#define VERSION 1.3
+#define VERSION 1.4
 
 static void
 version_print()
@@ -63,7 +63,7 @@ OPTIONS\n\
 						   \"title\", \"url\", \"notes\" or\n\
 						   \"passphrase\".\n\
 -e, --edit	      -I <id>			   Edit an entry data interactively\n\
--R, --shred-db	      <path>			   Shred database\n\
+-R, --rm-db	      <path>			   Remove database\n\
 -f, --find	      <search>			   Search database\n\
 -l, --list-all					   Show all entries\n\
 -S, --show-status				   Show database statuses\n\
